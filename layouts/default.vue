@@ -12,6 +12,7 @@
           v-for="(item, i) in items"
           :key="i"
           :to="item.to"
+          :href="item.href"
           router
           exact
         >
@@ -19,7 +20,8 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <v-list-item-title v-if="item.title=='Logout'" @click="logout()"  v-text="item.title" />
+            <v-list-item-title v-else v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -78,14 +80,24 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
+          title: 'Logout',
+          href: '#',
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Login',
+          to: '/login',
         },
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'Vuetify.js',
+    }
+  },
+  methods: {
+    logout() {
+      console.log('logout')
     }
   },
 }

@@ -3,10 +3,10 @@
     <v-col cols="12" sm="8" md="6">
       <v-card class="py-4">
         <v-card-title class="headline">
-            Public Home Page
+            Private Home Page
         </v-card-title>
         <v-card-text>
-            Welcome Home
+            Welcome to Private Home
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -19,6 +19,10 @@
 
 <script>
 export default {
-  name: 'IndexPage',
+  name: 'DashboardPage',
 }
 </script>
+
+<style>
+
+</style>
