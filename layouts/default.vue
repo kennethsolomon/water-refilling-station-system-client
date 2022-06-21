@@ -79,6 +79,11 @@ export default {
           to: '/',
         },
         {
+          icon: 'mdi-apps',
+          title: 'Dashboard',
+          to: '/dashboard',
+        },
+        {
           icon: 'mdi-chart-bubble',
           title: 'Logout',
           href: '#',
@@ -96,8 +101,12 @@ export default {
     }
   },
   methods: {
-    logout() {
-      console.log('logout')
+    async logout() {
+      try {
+        await this.$auth.logout()
+      } catch (error) {
+        console.log(error)  
+      }
     }
   },
 }
