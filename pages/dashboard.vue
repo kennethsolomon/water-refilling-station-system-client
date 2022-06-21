@@ -6,12 +6,8 @@
             Private Home Page
         </v-card-title>
         <v-card-text>
-            Welcome to Private Home
+            Welcome to 
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" to="/inspire"> Continue </v-btn>
-        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
@@ -20,6 +16,7 @@
 <script>
 export default {
   name: 'DashboardPage',
+  middleware: "auth"
 }
 </script>
 

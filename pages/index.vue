@@ -8,10 +8,6 @@
         <v-card-text>
             Welcome Home
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" to="/inspire"> Continue </v-btn>
-        </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
@@ -20,5 +16,7 @@
 <script>
 export default {
   name: 'IndexPage',
+  // Use if Global middleware is on inside nuxt.config and you want to exclude this page
+  // auth: false
 }
 </script>

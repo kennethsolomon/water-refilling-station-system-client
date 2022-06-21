@@ -8,22 +8,38 @@
       app
     >
       <v-list>
-        <v-list-item
+        <div 
           v-for="(item, i) in items"
           :key="i"
-          :to="item.to"
-          :href="item.href"
           router
           exact
         >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-if="item.title=='Logout'" @click="logout()"  v-text="item.title" />
-            <v-list-item-title v-else v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+            <!-- Authenticated -->
+            <v-list-item 
+            :to="item.to"
+            :href="item.href"
+            v-if="$auth.loggedIn && loggedIn.includes(item.title)">
+                    <v-list-item-action>
+                        <v-icon>{{ item.icon }}</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title v-if="item.title=='Logout'" @click="logout()"  v-text="item.title" />
+                        <v-list-item-title v-else v-text="item.title" />
+                    </v-list-item-content>
+            </v-list-item>
+            <!-- Guest -->
+            <v-list-item
+            :to="item.to"
+            :href="item.href"
+            v-if="!$auth.loggedIn && loggedOut.includes(item.title)">
+                <v-list-item-action>
+                    <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title v-text="item.title" />
+                </v-list-item-content>
+            </v-list-item>
+        </div>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -72,6 +88,8 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      loggedIn: ['Dashboard', 'Logout'],
+      loggedOut: ['Welcome', 'Login'],
       items: [
         {
           icon: 'mdi-apps',
@@ -104,6 +122,7 @@ export default {
     async logout() {
       try {
         await this.$auth.logout()
+        console.log('logout')
       } catch (error) {
         console.log(error)  
       }
