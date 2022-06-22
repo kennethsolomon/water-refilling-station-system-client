@@ -4,7 +4,6 @@
       v-if="$auth.loggedIn"
       v-model="drawer"
       :clipped="clipped"
-      fixed
       app
     >
       <v-list>
@@ -16,14 +15,15 @@
         >
             <!-- Authenticated -->
             <v-list-item 
+            v-if="$auth.loggedIn && loggedIn.includes(item.title)"
             :to="item.to"
             :href="item.href"
-            v-if="$auth.loggedIn && loggedIn.includes(item.title)">
+            >
                     <v-list-item-action>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title v-if="item.title=='Logout'" @click="logout()"  v-text="item.title" />
+                        <v-list-item-title v-if="item.title=='Logout'" @click="logout()" v-text="item.title" />
                         <v-list-item-title v-else v-text="item.title" />
                     </v-list-item-content>
             </v-list-item>
@@ -52,7 +52,7 @@
         <Nuxt />
       </v-container>
     </v-main>
-    <v-footer :absolute="!fixed" app>
+    <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
@@ -96,7 +96,6 @@ export default {
     async logout() {
       try {
         await this.$auth.logout()
-        console.log('logout')
       } catch (error) {
         console.log(error)  
       }
