@@ -20,7 +20,8 @@
             :href="item.href"
             >
                     <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
+                        <v-icon v-if="item.title=='Logout'" @click="logout()">{{ item.icon }}</v-icon>
+                        <v-icon v-else>{{ item.icon }}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title v-if="item.title=='Logout'" @click="logout()" v-text="item.title" />
