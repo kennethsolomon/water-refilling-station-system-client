@@ -42,9 +42,9 @@ export default {
   ],
 
   // Global Middleware
-  // router: {
-  //   middleware: ['auth']
-  // },
+  router: {
+    middleware: ['auth']
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -76,8 +76,8 @@ export default {
 
     redirect: {
       login: '/login',
-      logout: '/',
-      home: '/dashboard',
+      logout: '/login',
+      home: '/',
     },
   },
 
