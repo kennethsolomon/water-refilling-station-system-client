@@ -66,7 +66,7 @@ export default {
       clipped: true,
       drawer: true,
       loggedIn: ['Welcome', 'Dashboard', 'Logout'],
-      loggedOut: [], // Add All Item if Logged Out
+      // loggedOut: [], // Add All Item if Logged Out
       items: [
         {
           icon: 'mdi-apps',
