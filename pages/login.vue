@@ -88,6 +88,11 @@ export default {
       deep: true,
     },
   },
+
+  mounted() {
+    // Sample Global Helper
+    this.$add(1,1)
+  }
 }
 </script>
 
