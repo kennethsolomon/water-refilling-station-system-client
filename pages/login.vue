@@ -1,6 +1,6 @@
 
 <template>
-  <v-row @keyup.enter="onEnter()" justify="center" align="center">
+  <v-row justify="center" align="center" @keyup.enter="onEnter()">
     <v-col cols="12" sm="8" md="6">
       <v-card class="py-4">
         <v-card-title class="headline"> Login </v-card-title>
@@ -60,21 +60,6 @@ export default {
     },
   }),
 
-  methods: {
-    login() {
-      this.$auth
-        .loginWith('laravelSanctum', {
-          data: this.form,
-        })
-        .then((response) => console.log(response))
-        .catch((error) => console.log(error))
-    },
-
-    onEnter() {
-      this.login()
-    },
-  },
-
   watch: {
     form: {
       immediate: true,
@@ -91,8 +76,23 @@ export default {
 
   mounted() {
     // Sample Global Helper
-    this.$add(1,1)
-  }
+    this.$add(1, 1)
+  },
+
+  methods: {
+    login() {
+      this.$auth
+        .loginWith('laravelSanctum', {
+          data: this.form,
+        })
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error))
+    },
+
+    onEnter() {
+      this.login()
+    },
+  },
 }
 </script>
 

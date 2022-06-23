@@ -27,6 +27,18 @@ export default {
   // Use if Global middleware is on inside nuxt.config and you want to exclude this page
   // auth: false
 
+  async asyncData({ $axios }) {
+    const [shuffledCards] = await Promise.all([
+      $axios.get(
+        'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
+      ),
+    ])
+
+    return {
+      shuffledCards: shuffledCards.data,
+    }
+  },
+
   data: () => ({
     shuffledCards: [],
     current_card_img: null,
@@ -55,16 +67,8 @@ export default {
     ],
   }),
 
-  async asyncData({ $axios }) {
-    const [shuffledCards] = await Promise.all([
-      $axios.get(
-        'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
-      ),
-    ])
-
-    return {
-      shuffledCards: shuffledCards.data,
-    }
+  mounted() {
+    console.log(this.shuffledCards)
   },
 
   methods: {
@@ -109,8 +113,5 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.shuffledCards)
-  },
 }
 </script>
