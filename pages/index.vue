@@ -4,7 +4,7 @@
       <v-card class="py-4">
         <v-card-title class="headline">Currently Playing: {{playerInfo.name}}</v-card-title>
         <v-card-text
-          >Card Remaining: <strong>{{ cardremaining }}</strong></v-card-text
+          >Card Remaining: <strong>{{ cardRemaining }}</strong></v-card-text
         >
 
         <v-row >
@@ -49,7 +49,7 @@ export default {
 
   data: () => ({
     shuffledCards: [],
-    cardremaining: 52,
+    cardRemaining: 52,
     currentPlaying: 1,
     potMoney: null,
     drawnCard: null,
@@ -118,13 +118,25 @@ export default {
           player.cards = distributedCards[index]
         })
 
+        // v2 Code
+        // let start = 0
+        // const chunkCount = 2
+        // const chunks = card.cards.map((pair, i)=>{
+        //   const chunk = card.cards.slice(i+start, i+(chunkCount+start));
+        //   start+=1; return chunk;
+        // })
+
+        // const pair = chunks.filter(pair => {
+        //   return pair.length !== 0
+        // })
+
         console.log('Start', card)
       } else if (status === 'playing') {
         this.drawnCard = card.cards[0]
         console.log('Playing', card)
       }
 
-      this.cardremaining = card.remaining
+      this.cardRemaining = card.remaining
     },
 
     async shuffle() {
@@ -132,7 +144,7 @@ export default {
         .$get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
         .then((response) => {
           this.shuffledCards = response
-          this.cardremaining = response.remaining
+          this.cardRemaining = response.remaining
 
           this.drawACard('start', this.players.length * 2)
           console.log('Shuffle', response)
