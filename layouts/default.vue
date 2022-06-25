@@ -66,7 +66,7 @@ export default {
     return {
       clipped: true,
       drawer: true,
-      loggedIn: ['Welcome', 'Dashboard', 'Logout'],
+      loggedIn: ['Welcome', 'Dashboard', 'Logout', 'In Between Game'],
       // loggedOut: [], // Add All Item if Logged Out
       items: [
         {
@@ -76,8 +76,8 @@ export default {
         },
         {
           icon: 'mdi-apps',
-          title: 'Dashboard',
-          to: '/dashboard',
+          title: 'In Between Game',
+          to: '/play/1',
         },
         {
           icon: 'mdi-chart-bubble',
@@ -93,6 +93,10 @@ export default {
       title: 'Kenneth Solomon',
     }
   },
+
+  mounted() {
+  },
+
   methods: {
     async logout() {
       try {
