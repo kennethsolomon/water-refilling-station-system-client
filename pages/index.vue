@@ -1,32 +1,78 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="py-4">
-        <v-card-title class="headline">Currently Playing: {{playerInfo.name}}</v-card-title>
-        <v-card-text
-          >Card Remaining: <strong>{{ cardRemaining }}</strong></v-card-text
-        >
+  <div>
+    <v-card class="py-4">
+      <v-card-title class="headline"
+        >Currently Playing: {{ playerInfo.name }}</v-card-title
+      >
+      <v-row>
+        <v-col>
+          <v-card-text
+            >Card Remaining: <strong>{{ cardRemaining }}</strong></v-card-text
+          >
+        </v-col>
+        <v-col>
+          <v-btn
+            v-if="cardRemaining < 52"
+            style="float: right"
+            class="mt-3 mr-5"
+            @click="toogleShowCard()"
+            >{{ !showCard ? 'Show Card' : 'Hide Card' }}</v-btn
+          >
+        </v-col>
+      </v-row>
 
-        <v-row >
-            <v-col cols="6"
-              v-for="card in playerInfo.cards"
-              :key="card.id"
-            >
-              <v-img
-                :src="card.image"
-              ></v-img>
-            </v-col>
-        </v-row>
+      <v-row class="px-5">
+        <v-col cols="6" v-for="card in playerInfo.cards" :key="card.id">
+          <v-img
+            v-if="showCard"
+            class="center_content"
+            max-height="350"
+            max-width="250"
+            :src="card.image"
+          ></v-img>
+          <v-img
+            v-else
+            class="center_content"
+            max-height="350"
+            max-width="250"
+            src="/backface.jpg"
+          ></v-img>
+        </v-col>
+      </v-row>
 
-        <div class="mt-5">
-          <v-btn @click="drawACard('playing', 1)">Draw a Card</v-btn>
-          <v-btn @click="drawACard('start', players.length * 2)">Start Game</v-btn>
-          <v-btn @click="shuffle()">Shuffle</v-btn>
-        </div>
+      <v-card-title v-if="drawnCard" class="headline">Drawn Card</v-card-title>
+      <v-row>
+        <v-col class="cols">
+          <v-img
+            class="center_content"
+            max-height="350"
+            max-width="250"
+            v-if="drawnCard"
+            :src="drawnCard.image"
+          >
+          </v-img>
+        </v-col>
+      </v-row>
 
-      </v-card>
-    </v-col>
-  </v-row>
+      <v-row>
+        <!-- <v-col class="cols">
+          <v-btn class="center_content" @click="drawACard('playing', 1)"
+            >Draw a Card</v-btn
+          >
+        </v-col> -->
+        <v-col class="cols">
+          <v-btn
+            class="center_content"
+            @click="drawACard('start', players.length * 2)"
+            >Start Game</v-btn
+          >
+        </v-col>
+        <v-col class="cols">
+          <v-btn class="center_content" @click="shuffle()">Shuffle</v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -53,6 +99,7 @@ export default {
     currentPlaying: 1,
     potMoney: null,
     drawnCard: null,
+    showCard: false,
     players: [
       {
         id: 1,
@@ -80,8 +127,8 @@ export default {
 
   computed: {
     playerInfo() {
-      return this.players[this.currentPlaying-1]
-    }
+      return this.players[this.currentPlaying - 1]
+    },
   },
 
   mounted() {
@@ -94,6 +141,9 @@ export default {
   },
 
   methods: {
+    toogleShowCard() {
+      this.showCard = !this.showCard
+    },
     async drawACard(status, number) {
       this.$nuxt.$loading.start()
       const card = await this.$axios
@@ -106,6 +156,7 @@ export default {
         })
 
       if (status === 'start') {
+        this.drawACard('playing', 1)
         const chunk = 2
         let tempCard = []
         const distributedCards = []
@@ -117,6 +168,9 @@ export default {
         this.players.forEach((player, index) => {
           player.cards = distributedCards[index]
         })
+
+        this.currentPlaying < this.players.length ? this.currentPlaying += 1 : (this.cardRemaining === 52 ? '' : this.currentPlaying = 1)
+
 
         // v2 Code
         // let start = 0
@@ -141,7 +195,7 @@ export default {
 
     async shuffle() {
       await this.$axios
-        .$get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+        .$get(`https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/shuffle/`)
         .then((response) => {
           this.shuffledCards = response
           this.cardRemaining = response.remaining
@@ -153,3 +207,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+  .center_content {
+    display: block;
+    margin: auto;
+  }
+</style>
