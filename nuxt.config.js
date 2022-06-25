@@ -25,6 +25,8 @@ export default {
     '~/plugins/helper.js'
   ],
 
+  loading: { color: 'white'},
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 

@@ -2,20 +2,28 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <v-card class="py-4">
-        <v-card-title class="headline">Card Game</v-card-title>
+        <v-card-title class="headline">Currently Playing: {{playerInfo.name}}</v-card-title>
         <v-card-text
-          >Card Remaining: <strong>{{ card_remaining }}</strong></v-card-text
+          >Card Remaining: <strong>{{ cardremaining }}</strong></v-card-text
         >
-        <v-img
-          :lazy-src="current_card_img"
-          width="200px"
-          :src="current_card_img"
-        ></v-img>
-        <v-btn @click="drawACard('playing', 1)">Draw a Card</v-btn>
-        <v-btn @click="drawACard('start', players.length * 2)"
-          >Start Game</v-btn
-        >
-        <v-btn @click="shuffle()">Shuffle</v-btn>
+
+        <v-row >
+            <v-col cols="6"
+              v-for="card in playerInfo.cards"
+              :key="card.id"
+            >
+              <v-img
+                :src="card.image"
+              ></v-img>
+            </v-col>
+        </v-row>
+
+        <div class="mt-5">
+          <v-btn @click="drawACard('playing', 1)">Draw a Card</v-btn>
+          <v-btn @click="drawACard('start', players.length * 2)">Start Game</v-btn>
+          <v-btn @click="shuffle()">Shuffle</v-btn>
+        </div>
+
       </v-card>
     </v-col>
   </v-row>
@@ -41,24 +49,27 @@ export default {
 
   data: () => ({
     shuffledCards: [],
-    current_card_img: null,
-    card_remaining: 52,
-    pot_money: null,
-    drawn_card: null,
+    cardremaining: 52,
+    currentPlaying: 1,
+    potMoney: null,
+    drawnCard: null,
     players: [
       {
+        id: 1,
         name: 'Kenneth',
         cards: [],
         bet: 0,
         money: 100,
       },
       {
+        id: 2,
         name: 'Camille',
         cards: [],
         bet: 0,
         money: 100,
       },
       {
+        id: 3,
         name: 'Mely',
         cards: [],
         bet: 0,
@@ -67,17 +78,32 @@ export default {
     ],
   }),
 
+  computed: {
+    playerInfo() {
+      return this.players[this.currentPlaying-1]
+    }
+  },
+
   mounted() {
+    this.$nextTick(() => {
+      this.$nuxt.$loading.start()
+      setTimeout(() => this.$nuxt.$loading.finish(), 500)
+    })
     console.log(this.shuffledCards)
+    console.log(this.players)
   },
 
   methods: {
     async drawACard(status, number) {
+      this.$nuxt.$loading.start()
       const card = await this.$axios
         .$get(
           `https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/draw/?count=${number}`
         )
-        .then((response) => response)
+        .then((response) => {
+          this.$nuxt.$loading.finish()
+          return response
+        })
 
       if (status === 'start') {
         const chunk = 2
@@ -94,11 +120,11 @@ export default {
 
         console.log('Start', card)
       } else if (status === 'playing') {
-        this.drawn_card = card.cards[0]
+        this.drawnCard = card.cards[0]
         console.log('Playing', card)
       }
 
-      this.card_remaining = card.remaining
+      this.cardremaining = card.remaining
     },
 
     async shuffle() {
@@ -106,12 +132,12 @@ export default {
         .$get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
         .then((response) => {
           this.shuffledCards = response
-          this.card_remaining = response.remaining
+          this.cardremaining = response.remaining
 
+          this.drawACard('start', this.players.length * 2)
           console.log('Shuffle', response)
         })
     },
   },
-
 }
 </script>
