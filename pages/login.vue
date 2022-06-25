@@ -45,7 +45,7 @@ export default {
   name: 'LoginPage',
   data: () => ({
     form: {
-      email: 'john@email.com',
+      email: 'kenneth@email.com',
       password: 'password',
     },
     disabled: true,
