@@ -21,11 +21,9 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/helper.js'
-  ],
+  plugins: ['~/plugins/helper.js'],
 
-  loading: { color: 'white'},
+  loading: { color: 'white' },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -42,38 +40,47 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
   ],
 
   // Global Middleware
   router: {
-    middleware: ['auth']
+    middleware: ['auth'],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: "http://localhost:8000/api/",
+    baseURL: 'http://localhost:8000/api/',
+    credentials: true,
   },
-
+  
   auth: {
     strategies: {
+      cookie: {
+          cookie: {
+          name: 'XSRF-TOKEN',
+          }
+      },
       laravelSanctum: {
         provider: 'laravel/sanctum',
         url: 'http://localhost:8000',
         endpoints: {
+          csrf: {
+            url: '/sanctum/csrf-cookie',
+          },
           login: {
-            url: '/api/login'
+            url: '/api/login',
           },
           logout: {
-            url: '/api/logout'
+            url: '/api/logout',
           },
           user: {
-            url: '/api/user'
+            url: '/api/user',
           },
         },
         user: {
-          property: false
+          property: 'id',
         },
       },
     },
@@ -83,6 +90,8 @@ export default {
       logout: '/login',
       home: '/',
     },
+
+    plugins: ['~/plugins/axios'],
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

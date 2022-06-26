@@ -22,7 +22,7 @@
       </v-row>
 
       <v-row class="px-5">
-        <v-col cols="6" v-for="card in playerInfo.cards" :key="card.id">
+        <v-col v-for="card in playerInfo.cards" :key="card.id" cols="6">
           <v-img
             v-if="showCard"
             class="center_content"
@@ -44,10 +44,10 @@
       <v-row>
         <v-col class="cols">
           <v-img
+            v-if="drawnCard"
             class="center_content"
             max-height="350"
             max-width="250"
-            v-if="drawnCard"
             :src="drawnCard.image"
           >
           </v-img>
@@ -72,21 +72,7 @@
 
 <script>
 export default {
-  name: 'IndexPage',
-  // Use if Global middleware is on inside nuxt.config and you want to exclude this page
-  // auth: false
-
-  async asyncData({ $axios }) {
-    const [shuffledCards] = await Promise.all([
-      $axios.get(
-        'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
-      ),
-    ])
-
-    return {
-      shuffledCards: shuffledCards.data,
-    }
-  },
+  name: 'GamePage',
 
   data: () => ({
     shuffledCards: [],
@@ -95,6 +81,7 @@ export default {
     potMoney: null,
     drawnCard: null,
     showCard: false,
+    testPlayers: [],
     players: [
       {
         id: 1,
@@ -118,7 +105,20 @@ export default {
         money: 100,
       },
     ],
+    form: {
+      deck_id: '123asd',
+      current_playing: 1,
+      drawn_card: {},
+      cards: [],
+    },
   }),
+
+  async fetch() {
+    this.shuffledCards = await this.$axios.$get(
+      'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
+    )
+    // this.testPlayers = await this.$axios.$get('http://localhost:8000/api/getAllPlayers').then( response=> response)
+  },
 
   computed: {
     playerInfo() {
@@ -127,6 +127,7 @@ export default {
   },
 
   mounted() {
+    this.gameConfig()
     this.$nextTick(() => {
       this.$nuxt.$loading.start()
       setTimeout(() => this.$nuxt.$loading.finish(), 500)
@@ -136,6 +137,9 @@ export default {
   },
 
   methods: {
+    gameConfig() {
+      this.$axios.$post('http://localhost:8000/api/gameConfig', this.form)
+    },
     toogleShowCard() {
       this.showCard = !this.showCard
     },
@@ -164,8 +168,11 @@ export default {
           player.cards = distributedCards[index]
         })
 
-        this.currentPlaying < this.players.length ? this.currentPlaying += 1 : (this.cardRemaining === 52 ? '' : this.currentPlaying = 1)
-
+        this.currentPlaying < this.players.length
+          ? (this.currentPlaying += 1)
+          : this.cardRemaining === 52
+          ? ''
+          : (this.currentPlaying = 1)
 
         // v2 Code
         // let start = 0
@@ -190,7 +197,9 @@ export default {
 
     async shuffle() {
       await this.$axios
-        .$get(`https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/shuffle/`)
+        .$get(
+          `https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/shuffle/`
+        )
         .then((response) => {
           this.shuffledCards = response
           this.cardRemaining = response.remaining
@@ -203,8 +212,8 @@ export default {
 }
 </script>
 <style scoped>
-  .center_content {
-    display: block;
-    margin: auto;
-  }
+.center_content {
+  display: block;
+  margin: auto;
+}
 </style>

@@ -1,4 +1,3 @@
-
 <template>
   <v-row justify="center" align="center" @keyup.enter="onEnter()">
     <v-col cols="12" sm="8" md="6">
@@ -96,5 +95,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
