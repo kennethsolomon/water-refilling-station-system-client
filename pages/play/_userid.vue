@@ -7,12 +7,13 @@
       <v-row>
         <v-col>
           <v-card-text
-            >Card Remaining: <strong>{{ cardRemaining }}</strong></v-card-text
+            >Card Remaining:
+            <strong>{{ gameConfig.card_remaining }}</strong></v-card-text
           >
         </v-col>
         <v-col>
           <v-btn
-            v-if="cardRemaining < 52"
+            v-if="gameConfig.card_remaining < 52"
             style="float: right"
             class="mt-3 mr-5"
             @click="toogleShowCard()"
@@ -56,14 +57,20 @@
 
       <v-row>
         <v-col class="cols">
-          <v-btn
-            class="center_content"
-            @click="drawACard('start', players.length * 2)"
+          <v-btn class="center_content" @click="generateCards()"
             >Start Game</v-btn
           >
         </v-col>
         <v-col class="cols">
           <v-btn class="center_content" @click="shuffle()">Shuffle</v-btn>
+        </v-col>
+        <v-col class="cols">
+          <v-btn class="center_content" @click="getGameConfig()">Refresh</v-btn>
+        </v-col>
+        <v-col class="cols">
+          <v-btn class="center_content" @click="setGameConfig()"
+            >Game Config</v-btn
+          >
         </v-col>
       </v-row>
     </v-card>
@@ -75,7 +82,6 @@ export default {
   name: 'GamePage',
 
   data: () => ({
-    shuffledCards: [],
     cardRemaining: 52,
     currentPlaying: 1,
     potMoney: null,
@@ -105,19 +111,14 @@ export default {
         money: 100,
       },
     ],
-    form: {
-      deck_id: '123asd',
-      current_playing: 1,
-      drawn_card: {},
-      cards: [],
-    },
+    gameConfig: [],
+    form: {},
   }),
 
   async fetch() {
-    this.shuffledCards = await this.$axios.$get(
-      'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
+    this.testPlayers = await this.$axios.$get(
+      'http://localhost:8000/api/getAllPlayers'
     )
-    // this.testPlayers = await this.$axios.$get('http://localhost:8000/api/getAllPlayers').then( response=> response)
   },
 
   computed: {
@@ -127,86 +128,114 @@ export default {
   },
 
   mounted() {
-    this.gameConfig()
     this.$nextTick(() => {
       this.$nuxt.$loading.start()
       setTimeout(() => this.$nuxt.$loading.finish(), 500)
     })
-    console.log(this.shuffledCards)
-    console.log(this.players)
+
+    this.getGameConfig()
   },
 
   methods: {
-    gameConfig() {
-      this.$axios.$post('http://localhost:8000/api/gameConfig', this.form)
+    async setGameConfig() {
+      const shuffledCards = await this.$axios.$get(
+        'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'
+      )
+
+      await this.$axios.$post(
+        'http://localhost:8000/api/setGameConfig?new=true',
+        shuffledCards
+      )
+
+      await this.getGameConfig()
+      await this.generateCards()
     },
-    toogleShowCard() {
-      this.showCard = !this.showCard
+
+    async getGameConfig() {
+      this.gameConfig = await this.$axios.$get(
+        'http://localhost:8000/api/getGameConfig'
+      )
     },
-    async drawACard(status, number) {
+
+    async generateCards(number = this.players.length * 2) {
       this.$nuxt.$loading.start()
-      const card = await this.$axios
+      await this.$axios
         .$get(
-          `https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/draw/?count=${number}`
+          `https://deckofcardsapi.com/api/deck/${this.gameConfig.deck_id}/draw/?count=${number}`
         )
-        .then((response) => {
+        .then(async (response) => {
+          this.form.cards = response.cards
+
+          await this.$axios.$post(
+            `http://localhost:8000/api/setGameConfig?cards`,
+            this.form
+          )
+
+          this.cardRemaining = response.remaining
+
+          await this.drawACard()
+          await this.getGameConfig()
+        })
+
+      this.distributeCards()
+
+      this.$nuxt.$loading.finish()
+    },
+
+    async drawACard(number = 1) {
+      this.$nuxt.$loading.start()
+      await this.$axios
+        .$get(
+          `https://deckofcardsapi.com/api/deck/${this.gameConfig.deck_id}/draw/?count=${number}`
+        )
+        .then(async (response) => {
+          this.form.drawn_card = response.cards[0]
+          this.form.card_remaining = response.remaining
+
+          await this.$axios.$post(
+            `http://localhost:8000/api/setGameConfig?drawn_card&card_remaining`,
+            this.form
+          )
+
+          await this.getGameConfig()
+
           this.$nuxt.$loading.finish()
-          return response
         })
+    },
 
-      if (status === 'start') {
-        this.drawACard('playing', 1)
-        const chunk = 2
-        let tempCard = []
-        const distributedCards = []
-        for (let i = 0, j = card.cards.length; i < j; i += chunk) {
-          tempCard = card.cards.slice(i, i + chunk)
-          distributedCards.push(tempCard)
-        }
+    distributeCards() {
+      this.$nuxt.$loading.start()
 
-        this.players.forEach((player, index) => {
-          player.cards = distributedCards[index]
-        })
-
-        this.currentPlaying < this.players.length
-          ? (this.currentPlaying += 1)
-          : this.cardRemaining === 52
-          ? ''
-          : (this.currentPlaying = 1)
-
-        // v2 Code
-        // let start = 0
-        // const chunkCount = 2
-        // const chunks = card.cards.map((pair, i)=>{
-        //   const chunk = card.cards.slice(i+start, i+(chunkCount+start));
-        //   start+=1; return chunk;
-        // })
-
-        // const pair = chunks.filter(pair => {
-        //   return pair.length !== 0
-        // })
-
-        console.log('Start', card)
-      } else if (status === 'playing') {
-        this.drawnCard = card.cards[0]
-        console.log('Playing', card)
+      const chunk = 2
+      let tempCard = []
+      const distributedCards = []
+      for (let i = 0, j = this.gameConfig.cards.length; i < j; i += chunk) {
+        tempCard = this.gameConfig.cards.slice(i, i + chunk)
+        distributedCards.push(tempCard)
       }
 
-      this.cardRemaining = card.remaining
+      this.testPlayers.forEach((player, index) => {
+        player.cards = distributedCards[index]
+      })
+
+      // TODO: Save Current Player Playing ; Current Player + 1 to Database
     },
 
     async shuffle() {
       await this.$axios
         .$get(
-          `https://deckofcardsapi.com/api/deck/${this.shuffledCards.deck_id}/shuffle/`
+          `https://deckofcardsapi.com/api/deck/${this.gameConfig.deck_id}/shuffle/`
         )
         .then((response) => {
-          this.shuffledCards = response
           this.cardRemaining = response.remaining
 
-          this.drawACard('start', this.players.length * 2)
+          this.distributeCards(this.players.length * 2)
           console.log('Shuffle', response)
         })
+    },
+
+    toogleShowCard() {
+      this.showCard = !this.showCard
     },
   },
 }
