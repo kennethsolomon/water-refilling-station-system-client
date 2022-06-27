@@ -189,8 +189,8 @@ export default {
       const chunk = 2
       let tempCard = []
       const distributedCards = []
-      for (let i = 0, j = this.gameConfig.cards.length; i < j; i += chunk) {
-        tempCard = this.gameConfig.cards.slice(i, i + chunk)
+      for (let i = 0, j = this.gameConfig?.cards?.length; i < j; i += chunk) {
+        tempCard = this.gameConfig?.cards?.slice(i, i + chunk)
         distributedCards.push(tempCard)
       }
 
@@ -202,16 +202,25 @@ export default {
     },
 
     async shuffle() {
+      this.$nuxt.$loading.start()
       await this.$axios
         .$get(
           `https://deckofcardsapi.com/api/deck/${this.gameConfig.deck_id}/shuffle/`
         )
-        .then((response) => {
-          this.cardRemaining = response.remaining
+        .then(async (response) => {
+          this.form = {}
+          this.form.drawn_card = null
+          this.form.card = null
+          this.form.card_remaining = response.remaining
 
-          this.distributeCards(this.players.length * 2)
-          console.log('Shuffle', response)
+          await this.$axios.$post(
+            `http://localhost:8000/api/setGameConfig?cards&drawn_card&card_remaining`,
+            this.form
+          )
         })
+
+      await this.getGameConfig()
+      this.$nuxt.$loading.finish()
     },
 
     toogleShowCard() {
