@@ -41,15 +41,17 @@
         </v-col>
       </v-row>
 
-      <v-card-title v-if="drawnCard" class="headline">Drawn Card</v-card-title>
+      <v-card-title v-if="gameConfig.drawn_card" class="headline"
+        >Drawn Card</v-card-title
+      >
       <v-row>
         <v-col class="cols">
           <v-img
-            v-if="drawnCard"
+            v-if="gameConfig.drawn_card"
             class="center_content"
             max-height="350"
             max-width="250"
-            :src="drawnCard.image"
+            :src="gameConfig.drawn_card.image"
           >
           </v-img>
         </v-col>
@@ -87,36 +89,13 @@ export default {
     potMoney: null,
     drawnCard: null,
     showCard: false,
-    testPlayers: [],
-    players: [
-      {
-        id: 1,
-        name: 'Kenneth',
-        cards: [],
-        bet: 0,
-        money: 100,
-      },
-      {
-        id: 2,
-        name: 'Camille',
-        cards: [],
-        bet: 0,
-        money: 100,
-      },
-      {
-        id: 3,
-        name: 'Mely',
-        cards: [],
-        bet: 0,
-        money: 100,
-      },
-    ],
+    players: [],
     gameConfig: [],
     form: {},
   }),
 
   async fetch() {
-    this.testPlayers = await this.$axios.$get(
+    this.players = await this.$axios.$get(
       'http://localhost:8000/api/getAllPlayers'
     )
   },
@@ -155,6 +134,7 @@ export default {
       this.gameConfig = await this.$axios.$get(
         'http://localhost:8000/api/getGameConfig'
       )
+      this.distributeCards()
     },
 
     async generateCards(number = this.players.length * 2) {
@@ -214,7 +194,7 @@ export default {
         distributedCards.push(tempCard)
       }
 
-      this.testPlayers.forEach((player, index) => {
+      this.players.forEach((player, index) => {
         player.cards = distributedCards[index]
       })
 
