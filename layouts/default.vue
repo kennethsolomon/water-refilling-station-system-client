@@ -70,7 +70,7 @@ export default {
     return {
       clipped: true,
       drawer: true,
-      loggedIn: ['Welcome', 'Dashboard', 'Logout', 'In Between Game'],
+      loggedIn: ['Welcome', 'Dashboard', 'Logout', 'Customers'],
       // loggedOut: [], // Add All Item if Logged Out
       items: [
         {
@@ -80,8 +80,8 @@ export default {
         },
         {
           icon: 'mdi-apps',
-          title: 'In Between Game',
-          to: '/play/1',
+          title: 'Customers',
+          to: '/customers',
         },
         {
           icon: 'mdi-chart-bubble',
@@ -94,7 +94,7 @@ export default {
           to: '/login',
         },
       ],
-      title: 'Kenneth Solomon',
+      title: 'Ann & Kenneth Water Refilling Station',
     }
   },
 
