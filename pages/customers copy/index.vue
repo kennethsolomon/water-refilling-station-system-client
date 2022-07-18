@@ -1,15 +1,11 @@
 <template>
   <div>
-    <div v-if="$fetchState.pending">Loading ...</div>
-    <div v-else-if="$fetchState.error">
-      Error: {{ $fetchState.error.message }}
-    </div>
-    <v-card class="py-4" v-else>
+    <v-card class="py-4">
       <!-- <v-card-title class="headline">Customer</v-card-title> -->
       <v-card-text>
         <v-data-table
           :headers="headers"
-          :items="buildCustomers"
+          :items="filterItems"
           :search="search"
           disable-sort
           data-table-scroll-bar-width="17px"
@@ -198,21 +194,16 @@ export default {
     dialog: false,
     dialogDelete: false,
     search: null,
-    customers: [],
     headers: [
       { text: 'ID', value: 'id' },
-      { text: 'Customer Name', value: 'attributes.fullname' },
-      { text: 'Address', value: 'attributes.address' },
-      {
-        text: 'Credit',
-        value: 'attributes.credit',
-        align: 'center',
-      },
-      // { text: 'Gallon', value: 'gallon', align: 'center' },
-      { text: 'Classification', value: 'attributes.classification_info.name' },
-      { text: 'Contact Number', value: 'attributes.contact_number' },
-      { text: 'Last Transaction', value: 'attributes.updated_at' },
-      // { text: 'Status', value: 'status', align: 'center' },
+      { text: 'Customer Name', value: 'customer_name' },
+      { text: 'Address', value: 'address' },
+      { text: 'Credit', value: 'credit', align: 'center' },
+      { text: 'Gallon', value: 'gallon', align: 'center' },
+      { text: 'Classification', value: 'classification' },
+      { text: 'Contact Number', value: 'contact_number' },
+      { text: 'Last Transaction', value: 'last_transaction_date' },
+      { text: 'Status', value: 'status', align: 'center' },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
     filter_items: ['Active', 'Done', 'Credit'],
@@ -242,27 +233,8 @@ export default {
       last_transaction_date: new Date(Date.now()).toString().substr(4, 11),
     },
   }),
-  async fetch() {
-    this.customers = await this.$axios.$get(
-      'http://localhost:8000/api/customers'
-    )
-  },
+
   computed: {
-    // TODO: WIP Building Borrowed Items
-    buildCustomers() {
-      return this.customers.data.reduce((list, row) => {
-        let total_credit = 0
-
-        row.attributes.transactions.forEach((element) => {
-          total_credit += Number(element?.attributes?.credit)
-        })
-
-        row.attributes.credit = total_credit
-
-        list.push(row)
-        return list
-      }, [])
-    },
     formTitle() {
       return this.editedIndex === -1 ? 'New Customer' : 'Edit Customer'
     },
