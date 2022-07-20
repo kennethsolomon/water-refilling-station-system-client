@@ -15,37 +15,40 @@
             data-table-scroll-bar-width="17px"
             class="elevation-1"
           >
-            <template v-slot:top>
+            <template #top>
               <v-toolbar flat>
                 <v-toolbar-title>Customers</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Search"
-                      single-line
-                      hide-details
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search"
+                  class="mr-3"
+                  single-line
+                  hide-details
+                ></v-text-field>
+                <v-btn
+                  color="primary"
+                  medium
+                  @click="showCreateCustomerDialog()"
+                  ><v-icon class="mr-2">mdi-plus</v-icon> Add Customer</v-btn
+                >
               </v-toolbar>
             </template>
-            <template v-slot:[`item.gallon`]="{ item }">
+            <template #[`item.gallon`]="{ item }">
               <v-row>
                 <v-col cols="12">
                   <v-icon
-                    @click="showBarrowList(item.id)"
                     medium
                     :disabled="!item.attributes.borrows.length"
+                    @click="showBarrowListDialog(item.id)"
                   >
                     mdi-water-alert-outline
                   </v-icon>
                 </v-col>
               </v-row>
             </template>
-            <template v-slot:[`item.actions`]="{ item }">
+            <template #[`item.actions`]="{ item }">
               <v-row>
                 <v-col cols="12">
                   <v-icon medium class="mr-1"> mdi-water-plus </v-icon>
@@ -63,7 +66,7 @@
                 </v-col>
               </v-row>
             </template>
-            <template v-slot:no-data>
+            <template #no-data>
               <v-btn color="primary" @click="initialize"> Reset </v-btn>
             </template>
           </v-data-table>
@@ -71,9 +74,16 @@
         <CustomerBorrowListDialog
           v-if="customer_borrow_list_dialog"
           :customer_borrow_list_dialog="customer_borrow_list_dialog"
-          @closeCustomerBorrowListDialog="customer_borrow_list_dialog = false"
           :selected_owner_id="selected_owner_id"
+          @closeCustomerBorrowListDialog="customer_borrow_list_dialog = false"
         ></CustomerBorrowListDialog>
+        <AddCustomerDialog
+          v-if="create_customer_dialog"
+          :create-customer-dialog="create_customer_dialog"
+          :mode="mode"
+          @closeCreateCustomerDialog="create_customer_dialog = false"
+        >
+        </AddCustomerDialog>
       </v-card>
     </v-col>
   </v-row>
@@ -83,7 +93,11 @@
 export default {
   name: 'CustomersPage',
   data: () => ({
+    // Dialogs
     customer_borrow_list_dialog: false,
+    create_customer_dialog: false,
+    mode: null,
+
     selected_owner_id: null,
     dialog: false,
     dialogDelete: false,
@@ -164,9 +178,14 @@ export default {
   },
 
   methods: {
-    showBarrowList(customer_id) {
+    showBarrowListDialog(customer_id) {
       this.customer_borrow_list_dialog = true
       this.selected_owner_id = customer_id
+    },
+
+    showCreateCustomerDialog() {
+      this.create_customer_dialog = true
+      this.mode = 'Add'
     },
 
     editItem(item) {
