@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="40%" persistent>
+    <v-dialog v-model="dialog" width="60vw" persistent>
       <v-card>
         <v-card-title class="text-h5 primary"
           >{{ mode }} Customer
