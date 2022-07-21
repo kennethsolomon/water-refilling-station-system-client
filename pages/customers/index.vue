@@ -9,10 +9,9 @@
         <v-card-text v-else>
           <CustomerDataTable
             :customers="customers"
-            @customer-create-update-dialog="
-              customer_create_update_dialog = true
-            "
-            @set-mode="mode = 'Add'"
+            @customer-create-dialog="customer_create_update_dialog = true"
+            @customer-update-dialog="customer_create_update_dialog = true"
+            @set-mode="setMode($event)"
             @show-customer-borrow-list-dialog="
               customer_borrow_list_dialog = true
             "
@@ -62,6 +61,9 @@ export default {
   methods: {
     setCustomerId(customer_id) {
       this.customer_id = Number(customer_id)
+    },
+    setMode(mode) {
+      this.mode = mode
     },
     fetchNewCustomerData() {
       this.$fetch()

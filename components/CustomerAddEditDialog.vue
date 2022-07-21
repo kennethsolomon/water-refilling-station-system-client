@@ -157,7 +157,7 @@ export default {
       dialog: false,
 
       classifications: [],
-      customer_borrowed_items: [],
+      selected_customer: {},
       form: {
         classification_id: null,
         firstname: null,
@@ -177,9 +177,24 @@ export default {
 
   created() {
     this.dialog = this.customerCreateUpdateDialog
+    this.selected_customer = this.selectedCustomer
+    if (this.mode === 'Edit') {
+      this.fillForm()
+    }
   },
 
   methods: {
+    fillForm() {
+      this.form.id = this.selected_customer.id
+      this.form.classification_id =
+        this.selected_customer.attributes.classification_info.id
+      this.form.firstname = this.selected_customer.attributes.firstname
+      this.form.middlename = this.selected_customer.attributes.middlename
+      this.form.lastname = this.selected_customer.attributes.lastname
+      this.form.address = this.selected_customer.attributes.address
+      this.form.contact_number =
+        this.selected_customer.attributes.contact_number
+    },
     createUpdateCustomer() {
       this.$axios
         .$post('update_or_create_customer', this.form)

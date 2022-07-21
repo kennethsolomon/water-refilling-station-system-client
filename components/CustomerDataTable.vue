@@ -19,7 +19,7 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-btn color="primary" medium @click="showCustomerCreateUpdateDialog()"
+        <v-btn color="primary" medium @click="showCustomerCreateDialog()"
           ><v-icon class="mr-2">mdi-plus</v-icon> Add Customer</v-btn
         >
       </v-toolbar>
@@ -48,7 +48,7 @@
           >
             mdi-eye
           </v-icon>
-          <v-icon medium class="mr-1" @click="customerEdit(item)">
+          <v-icon medium class="mr-1" @click="customerUpdate(item)">
             mdi-pencil
           </v-icon>
           <v-icon medium @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -114,12 +114,13 @@ export default {
       this.$emit('show-customer-borrow-list-dialog')
       this.$emit('set-customer-id', customer_id)
     },
-    showCustomerCreateUpdateDialog() {
-      this.$emit('customer-create-update-dialog')
-      this.$emit('set-mode')
+    showCustomerCreateDialog() {
+      this.$emit('customer-create-dialog')
+      this.$emit('set-mode', 'Add')
     },
-    customerEdit(item) {
-      this.$emit('customer-create-update-dialog')
+    customerUpdate(item) {
+      this.$emit('customer-update-dialog')
+      this.$emit('set-mode', 'Edit')
       this.$emit('selected-customer', item)
     },
   },
