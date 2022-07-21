@@ -22,8 +22,9 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/axios',
+    '~/plugins/vee-validate.js',
     '~/plugins/helper.js',
-    '~/plugins/vee-validate.js'
   ],
 
   loading: { color: 'white' },
@@ -94,7 +95,6 @@ export default {
       home: '/',
     },
 
-    plugins: ['~/plugins/axios'],
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
