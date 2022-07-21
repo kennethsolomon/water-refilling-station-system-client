@@ -5,7 +5,7 @@
         <v-card-title class="text-h5 primary"
           >Customer Borrow List
           <v-spacer></v-spacer>
-          <v-icon @click="$emit('closeCustomerBorrowListDialog')"
+          <v-icon @click="$emit('close-customer-borrow-list-dialog')"
             >mdi-close</v-icon
           ></v-card-title
         >

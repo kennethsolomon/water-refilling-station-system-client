@@ -5,7 +5,7 @@
         <v-card-title class="text-h5 primary"
           >{{ mode }} Customer
           <v-spacer></v-spacer>
-          <v-icon @click="$emit('closeCreateCustomerDialog')"
+          <v-icon @click="$emit('close-create-customer-dialog')"
             >mdi-close</v-icon
           ></v-card-title
         >
@@ -177,11 +177,12 @@ export default {
 
   methods: {
     createNewCustomer() {
-      this.$axios.$post('update_or_create_customer', this.form)
-      .then((response) => {
-        this.$emit('fetchNewCustomerData') 
-        this.$emit('closeCreateCustomerDialog')
-      })
+      this.$axios
+        .$post('update_or_create_customer', this.form)
+        .then((response) => {
+          this.$emit('fetch-new-customer-data')
+          this.$emit('close-create-customer-dialog')
+        })
     },
   },
 }
