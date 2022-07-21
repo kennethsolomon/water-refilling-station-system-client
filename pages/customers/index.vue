@@ -82,6 +82,7 @@
           :create-customer-dialog="create_customer_dialog"
           :mode="mode"
           @closeCreateCustomerDialog="create_customer_dialog = false"
+          @fetchNewCustomerData="fetchNewCustomerData"
         >
         </AddCustomerDialog>
       </v-card>
@@ -186,6 +187,10 @@ export default {
     showCreateCustomerDialog() {
       this.create_customer_dialog = true
       this.mode = 'Add'
+    },
+
+    fetchNewCustomerData() {
+      this.$fetch()
     },
 
     editItem(item) {

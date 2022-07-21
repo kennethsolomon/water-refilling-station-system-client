@@ -177,7 +177,11 @@ export default {
 
   methods: {
     createNewCustomer() {
-      // Do Something
+      this.$axios.$post('update_or_create_customer', this.form)
+      .then((response) => {
+        this.$emit('fetchNewCustomerData') 
+        this.$emit('closeCreateCustomerDialog')
+      })
     },
   },
 }
