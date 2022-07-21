@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-card class="py-4">
-      <!-- FIXME: TypeError: Cannot read properties of undefined (reading 'name') -->
       <v-card-title class="headline"
         >Currently Playing: {{ playerInfo.name }}</v-card-title
       >
@@ -58,7 +57,6 @@
         </v-col>
       </v-row>
 
-      <!-- TODO: Add Bet Field Then Save to Database -->
       <v-row>
         <v-col class="cols">
           <v-btn class="center_content" @click="generateCards()"
@@ -199,8 +197,6 @@ export default {
       this.players.forEach((player, index) => {
         player.cards = distributedCards[index]
       })
-
-      // TODO: Save Current Player Playing ; Current Player + 1 to Database
     },
 
     async shuffle() {
