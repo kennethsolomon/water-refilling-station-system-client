@@ -9,28 +9,34 @@
         <v-card-text v-else>
           <CustomerDataTable
             :customers="customers"
-            @create-customer-dialog="create_customer_dialog = true"
+            @customer-create-update-dialog="
+              customer_create_update_dialog = true
+            "
             @set-mode="mode = 'Add'"
             @show-customer-borrow-list-dialog="
               customer_borrow_list_dialog = true
             "
             @set-customer-id="setCustomerId($event)"
+            @selected-customer="customerEdit($event)"
           ></CustomerDataTable>
         </v-card-text>
         <CustomerBorrowListDialog
           v-if="customer_borrow_list_dialog"
-          :customer_borrow_list_dialog="customer_borrow_list_dialog"
-          :selected_owner_id="selected_owner_id"
-          @close-customer-borrow-list-dialog="customer_borrow_list_dialog = false"
+          :show-customer-borrow-list-dialog="customer_borrow_list_dialog"
+          :customer-id="customer_id"
+          @close-customer-borrow-list-dialog="
+            customer_borrow_list_dialog = false
+          "
         ></CustomerBorrowListDialog>
-        <AddCustomerDialog
-          v-if="create_customer_dialog"
-          :create-customer-dialog="create_customer_dialog"
+        <CustomerAddEditDialog
+          v-if="customer_create_update_dialog"
+          :customer-create-update-dialog="customer_create_update_dialog"
+          :selected-customer="selected_customer"
           :mode="mode"
-          @close-create-customer-dialog="create_customer_dialog = false"
+          @close-create-customer-dialog="customer_create_update_dialog = false"
           @fetch-new-customer-data="fetchNewCustomerData"
         >
-        </AddCustomerDialog>
+        </CustomerAddEditDialog>
       </v-card>
     </v-col>
   </v-row>
@@ -41,10 +47,11 @@ export default {
   name: 'CustomersPage',
   data: () => ({
     customer_borrow_list_dialog: false,
-    create_customer_dialog: false,
+    customer_create_update_dialog: false,
     mode: null,
-    selected_owner_id: null,
+    customer_id: null,
     customers: [],
+    selected_customer: {},
   }),
   async fetch() {
     this.customers = await this.$axios.$get(
@@ -54,10 +61,13 @@ export default {
 
   methods: {
     setCustomerId(customer_id) {
-      this.selected_owner_id = customer_id
+      this.customer_id = Number(customer_id)
     },
     fetchNewCustomerData() {
       this.$fetch()
+    },
+    customerEdit(selected_customer) {
+      this.selected_customer = selected_customer
     },
   },
 }

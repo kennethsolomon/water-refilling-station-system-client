@@ -19,7 +19,7 @@
           </div>
           <v-container v-else>
             <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
-              <v-form ref="form" @submit.prevent="createNewCustomer">
+              <v-form ref="form" @submit.prevent="createUpdateCustomer">
                 <v-row>
                   <v-col cols="4">
                     <ValidationProvider
@@ -139,13 +139,17 @@
 <script>
 export default {
   props: {
-    createCustomerDialog: {
+    customerCreateUpdateDialog: {
       type: Boolean,
       default: false,
     },
     mode: {
       type: String,
       default: '',
+    },
+    selectedCustomer: {
+      type: Object,
+      default: () => {},
     },
   },
   data() {
@@ -172,11 +176,11 @@ export default {
   },
 
   created() {
-    this.dialog = this.createCustomerDialog
+    this.dialog = this.customerCreateUpdateDialog
   },
 
   methods: {
-    createNewCustomer() {
+    createUpdateCustomer() {
       this.$axios
         .$post('update_or_create_customer', this.form)
         .then((response) => {

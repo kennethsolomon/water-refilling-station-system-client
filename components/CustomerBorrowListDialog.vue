@@ -41,7 +41,16 @@
 
 <script>
 export default {
-  props: ['customer_borrow_list_dialog', 'selected_owner_id'],
+  props: {
+    showCustomerBorrowListDialog: {
+      type: Boolean,
+      default: false,
+    },
+    customerId: {
+      type: Number,
+      default: null,
+    },
+  },
   data() {
     return {
       dialog: false,
@@ -51,12 +60,12 @@ export default {
 
   async fetch() {
     this.customer_borrowed_items = await this.$axios.$get(
-      `http://localhost:8000/api/customer_total_borrow_items/${this.selected_owner_id}`
+      `http://localhost:8000/api/customer_total_borrow_items/${this.customerId}`
     )
   },
 
   created() {
-    this.dialog = this.customer_borrow_list_dialog
+    this.dialog = this.showCustomerBorrowListDialog
   },
 }
 </script>
