@@ -11,27 +11,26 @@
         >
         <v-card-text>
           <v-container>
-            <template>
-              <v-simple-table dark>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left"><h2>Name</h2></th>
-                      <th class="text-left"><h2>Quantity</h2></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="item in customer_borrowed_items"
-                      :key="item.item_id"
-                    >
-                      <td>{{ item.item_info.name }}</td>
-                      <td>{{ item.total_borrow }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </template>
+            <!-- BUG: #:default not working -->
+            <v-simple-table dark>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left"><h2>Name</h2></th>
+                    <th class="text-left"><h2>Quantity</h2></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in customer_borrowed_items"
+                    :key="item.item_id"
+                  >
+                    <td>{{ item.item_info.name }}</td>
+                    <td>{{ item.total_borrow }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
           </v-container>
         </v-card-text>
       </v-card>
