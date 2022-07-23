@@ -185,15 +185,10 @@ export default {
 
   methods: {
     fillForm() {
+      this.form = Object.assign({}, this.selected_customer.attributes)
       this.form.id = this.selected_customer.id
       this.form.classification_id =
         this.selected_customer.attributes.classification_info.id
-      this.form.firstname = this.selected_customer.attributes.firstname
-      this.form.middlename = this.selected_customer.attributes.middlename
-      this.form.lastname = this.selected_customer.attributes.lastname
-      this.form.address = this.selected_customer.attributes.address
-      this.form.contact_number =
-        this.selected_customer.attributes.contact_number
     },
     createUpdateCustomer() {
       this.$axios
