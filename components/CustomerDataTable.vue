@@ -42,7 +42,9 @@
       <template #[`item.actions`]="{ item }">
         <v-row>
           <v-col cols="12">
-            <v-icon medium class="mr-1"> mdi-water-plus </v-icon>
+            <v-icon medium class="mr-1" @click="transactionDialog(item)">
+              mdi-water-plus
+            </v-icon>
             <v-icon
               medium
               class="mr-1"
@@ -66,6 +68,11 @@
       :delete-dialog-data="delete_dialog_data"
       @confirmDelete="confirmDelete($event)"
     ></DeleteConfirmationDialog>
+    <TransactionDialog
+      v-if="transaction_dialog_data.transaction_dialog"
+      :transaction-dialog-data="transaction_dialog_data"
+      @closeTransactionDialog="closeTransactionDialog($event)"
+    ></TransactionDialog>
   </div>
 </template>
 
@@ -107,6 +114,11 @@ export default {
       delete_item_index: null,
       delete_confirmation_dialog: false,
       delete_title: null,
+    },
+    // TRANSACTION DIALOG
+    transaction_dialog_data: {
+      transaction_dialog: false,
+      customer: null,
     },
   }),
   computed: {
@@ -176,6 +188,11 @@ export default {
       this.delete_dialog_data.delete_item_index = null
     },
     // END DELETE DIALOG
+    closeTransactionDialog(event) {},
+    transactionDialog(item) {
+      this.transaction_dialog_data.customer = item
+      this.transaction_dialog_data.transaction_dialog = true
+    },
   },
 }
 </script>
