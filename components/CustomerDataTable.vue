@@ -3,7 +3,8 @@
     :headers="headers"
     :items="buildCustomers"
     :search="search"
-    disable-sort
+    sort-by="attributes.transactions[0].attributes.latest_transaction"
+    :sort-desc="true"
     data-table-scroll-bar-width="17px"
     class="elevation-1"
   >
