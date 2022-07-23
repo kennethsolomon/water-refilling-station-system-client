@@ -8,7 +8,7 @@
 
         <v-card-text>
           <v-container>
-            <v-row>
+            <v-row class="d-flex align-center">
               <v-col cols="3">
                 <img
                   src="/trash.png"
@@ -17,7 +17,7 @@
                   srcset="/trash.png"
                 />
               </v-col>
-              <v-col cols="9" class="d-flex align-center">
+              <v-col cols="9">
                 <div>
                   Are you sure you want to <strong>delete </strong>
                   <em>{{ deleteDialogData.delete_title }}</em> ? This action is
