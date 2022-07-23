@@ -62,9 +62,8 @@
       </template>
     </v-data-table>
     <DeleteConfirmationDialog
-      v-if="delete_confirmation_dialog"
-      :delete-confirmation-dialog="delete_confirmation_dialog"
-      :delete-title="delete_title"
+      v-if="delete_dialog_data.delete_confirmation_dialog"
+      :delete-dialog-data="delete_dialog_data"
       @confirmDelete="confirmDelete($event)"
     ></DeleteConfirmationDialog>
   </div>
@@ -101,9 +100,12 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
-    delete_confirmation_dialog: false,
-    delete_item_id: null,
-    delete_title: null,
+    // DELETE DIALOG
+    delete_dialog_data: {
+      delete_confirmation_dialog: false,
+      delete_item_id: null,
+      delete_title: null,
+    },
   }),
   computed: {
     buildCustomers() {
@@ -135,21 +137,26 @@ export default {
       this.$emit('set-mode', 'Edit')
       this.$emit('selected-customer', item)
     },
+
+    // DELETE DIALOG
     customerDelete(item) {
-      this.delete_title = item.attributes.fullname
-      this.delete_item_id = item.id
-      this.delete_confirmation_dialog = true
+      this.delete_dialog_data.delete_item_id = item.id
+      this.delete_dialog_data.delete_title = item.attributes.fullname
+      this.delete_dialog_data.delete_confirmation_dialog = true
     },
     confirmDelete(confirm) {
       if (confirm) {
-        this.delete_confirmation_dialog = false
-        this.delete_item_id = null
-        this.delete_title = null
+        this.resetDeleteDialog()
       } else {
-        this.delete_confirmation_dialog = false
-        this.delete_title = null
+        this.resetDeleteDialog()
       }
     },
+    resetDeleteDialog() {
+      this.delete_dialog_data.delete_item_id = null
+      this.delete_dialog_data.delete_confirmation_dialog = false
+      this.delete_dialog_data.delete_title = null
+    },
+    // END DELETE DIALOG
   },
 }
 </script>

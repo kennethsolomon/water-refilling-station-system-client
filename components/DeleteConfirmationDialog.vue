@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" width="500" persistent>
       <v-card>
         <v-card-title class="text-h5 error"
-          >Delete {{ deleteTitle }}</v-card-title
+          >Delete {{ deleteDialogData.delete_title }}</v-card-title
         >
 
         <v-card-text>
@@ -20,7 +20,7 @@
               <v-col cols="9" class="d-flex align-center">
                 <div>
                   Are you sure you want to <strong>delete </strong>
-                  <em>{{ deleteTitle }}</em> ? This action is
+                  <em>{{ deleteDialogData.delete_title }}</em> ? This action is
                   <strong>not reversable</strong> .
                 </div>
               </v-col>
@@ -47,27 +47,23 @@
 <script>
 export default {
   props: {
-    deleteConfirmationDialog: {
-      type: Boolean,
-      default: false,
-    },
-    deleteTitle: {
-      type: String,
-      default: '',
+    deleteDialogData: {
+      type: Object,
+      default: () => {},
     },
   },
   data: () => ({
     dialog: false,
   }),
 
+  created() {
+    this.dialog = this.deleteDialogData.delete_confirmation_dialog
+  },
+
   methods: {
     confirmDelete(choice) {
       this.$emit('confirmDelete', choice)
     },
-  },
-
-  created() {
-    this.dialog = this.deleteConfirmationDialog
   },
 }
 </script>
