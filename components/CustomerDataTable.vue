@@ -1,65 +1,73 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="buildCustomers"
-    :search="search"
-    sort-by="attributes.transactions[0].attributes.latest_transaction"
-    :sort-desc="true"
-    data-table-scroll-bar-width="17px"
-    class="elevation-1"
-  >
-    <template #top>
-      <v-toolbar flat>
-        <v-toolbar-title>Customers</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          class="mr-3"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-btn color="primary" medium @click="showCustomerCreateDialog()"
-          ><v-icon class="mr-2">mdi-plus</v-icon> Add Customer</v-btn
-        >
-      </v-toolbar>
-    </template>
-    <template #[`item.gallon`]="{ item }">
-      <v-row>
-        <v-col cols="12">
-          <v-icon
-            medium
-            :disabled="!item.attributes.borrows.length"
-            @click="showBarrowListDialog(item.id)"
+  <div>
+    <v-data-table
+      :headers="headers"
+      :items="buildCustomers"
+      :search="search"
+      sort-by="attributes.transactions[0].attributes.latest_transaction"
+      :sort-desc="true"
+      data-table-scroll-bar-width="17px"
+      class="elevation-1"
+    >
+      <template #top>
+        <v-toolbar flat>
+          <v-toolbar-title>Customers</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            class="mr-3"
+            single-line
+            hide-details
+          ></v-text-field>
+          <v-btn color="primary" medium @click="showCustomerCreateDialog()"
+            ><v-icon class="mr-2">mdi-plus</v-icon> Add Customer</v-btn
           >
-            mdi-water-alert-outline
-          </v-icon>
-        </v-col>
-      </v-row>
-    </template>
-    <template #[`item.actions`]="{ item }">
-      <v-row>
-        <v-col cols="12">
-          <v-icon medium class="mr-1"> mdi-water-plus </v-icon>
-          <v-icon
-            medium
-            class="mr-1"
-            @click="$router.push(`/customers/${item.id}`)"
-          >
-            mdi-eye
-          </v-icon>
-          <v-icon medium class="mr-1" @click="customerUpdate(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon medium @click="deleteItem(item)"> mdi-delete </v-icon>
-        </v-col>
-      </v-row>
-    </template>
-    <template #no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
-    </template>
-  </v-data-table>
+        </v-toolbar>
+      </template>
+      <template #[`item.gallon`]="{ item }">
+        <v-row>
+          <v-col cols="12">
+            <v-icon
+              medium
+              :disabled="!item.attributes.borrows.length"
+              @click="showBarrowListDialog(item.id)"
+            >
+              mdi-water-alert-outline
+            </v-icon>
+          </v-col>
+        </v-row>
+      </template>
+      <template #[`item.actions`]="{ item }">
+        <v-row>
+          <v-col cols="12">
+            <v-icon medium class="mr-1"> mdi-water-plus </v-icon>
+            <v-icon
+              medium
+              class="mr-1"
+              @click="$router.push(`/customers/${item.id}`)"
+            >
+              mdi-eye
+            </v-icon>
+            <v-icon medium class="mr-1" @click="customerUpdate(item)">
+              mdi-pencil
+            </v-icon>
+            <v-icon medium @click="customerDelete(item)"> mdi-delete </v-icon>
+          </v-col>
+        </v-row>
+      </template>
+      <template #no-data>
+        <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      </template>
+    </v-data-table>
+    <DeleteConfirmationDialog
+      v-if="delete_confirmation_dialog"
+      :delete-confirmation-dialog="delete_confirmation_dialog"
+      :delete-title="delete_title"
+      @confirmDelete="confirmDelete($event)"
+    ></DeleteConfirmationDialog>
+  </div>
 </template>
 
 <script>
@@ -93,6 +101,9 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
+    delete_confirmation_dialog: false,
+    delete_item_id: null,
+    delete_title: null,
   }),
   computed: {
     buildCustomers() {
@@ -123,6 +134,21 @@ export default {
       this.$emit('customer-update-dialog')
       this.$emit('set-mode', 'Edit')
       this.$emit('selected-customer', item)
+    },
+    customerDelete(item) {
+      this.delete_title = item.attributes.fullname
+      this.delete_item_id = item.id
+      this.delete_confirmation_dialog = true
+    },
+    confirmDelete(confirm) {
+      if (confirm) {
+        this.delete_confirmation_dialog = false
+        this.delete_item_id = null
+        this.delete_title = null
+      } else {
+        this.delete_confirmation_dialog = false
+        this.delete_title = null
+      }
     },
   },
 }
