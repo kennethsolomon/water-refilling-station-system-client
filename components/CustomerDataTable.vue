@@ -100,16 +100,18 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
+    customers_list: [],
     // DELETE DIALOG
     delete_dialog_data: {
-      delete_confirmation_dialog: false,
       delete_item_id: null,
+      delete_item_index: null,
+      delete_confirmation_dialog: false,
       delete_title: null,
     },
   }),
   computed: {
     buildCustomers() {
-      return this.customers.data.reduce((list, row) => {
+      return this.customers_list.reduce((list, row) => {
         let total_credit = 0
 
         // Compute Total Credits
@@ -122,6 +124,9 @@ export default {
         return list
       }, [])
     },
+  },
+  created() {
+    this.customers_list = this.customers.data
   },
   methods: {
     showBarrowListDialog(customer_id) {
@@ -140,13 +145,26 @@ export default {
 
     // DELETE DIALOG
     customerDelete(item) {
+      this.delete_dialog_data.delete_item_index =
+        this.buildCustomers.indexOf(item)
+
       this.delete_dialog_data.delete_item_id = item.id
       this.delete_dialog_data.delete_title = item.attributes.fullname
       this.delete_dialog_data.delete_confirmation_dialog = true
     },
-    confirmDelete(confirm) {
+    async confirmDelete(confirm) {
       if (confirm) {
-        this.resetDeleteDialog()
+        await this.$axios
+          .$delete(
+            `http://localhost:8000/api/delete_customer/${this.delete_dialog_data.delete_item_id}`
+          )
+          .then(() => {
+            this.customers_list.splice(
+              this.delete_dialog_data.delete_item_index,
+              1
+            )
+            this.resetDeleteDialog()
+          })
       } else {
         this.resetDeleteDialog()
       }
@@ -155,6 +173,7 @@ export default {
       this.delete_dialog_data.delete_item_id = null
       this.delete_dialog_data.delete_confirmation_dialog = false
       this.delete_dialog_data.delete_title = null
+      this.delete_dialog_data.delete_item_index = null
     },
     // END DELETE DIALOG
   },
