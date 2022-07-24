@@ -58,57 +58,113 @@
                 </v-col>
               </v-row>
 
-              <!-- ORDERS -->
-              <v-row>
-                <v-col cols="9">
-                  <v-autocomplete
-                    v-model="selected_item"
-                    label="Select Item"
-                    :items="items.data"
-                    item-text="attributes.name"
-                    return-object
-                    solo
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col cols="3">
-                  <v-text-field
-                    v-model="order.quantity"
-                    label="Quantity"
-                    type="number"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-autocomplete
-                    v-model="selected_type_of_service"
-                    label="Select Service"
-                    :items="type_of_service_list"
-                    solo
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col cols="3">
-                  <v-checkbox
-                    v-model="selected_is_borrow"
-                    label="Borrow"
-                    color="success"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="3">
-                  <v-checkbox
-                    v-model="selected_is_free"
-                    label="Free"
-                    color="success"
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-              </v-row>
-              <v-btn @click="addToOrders()">Add Order</v-btn>
+              <v-card class="mx-auto mt-3">
+                <v-card-text>
+                  <p class="text-h6 text--primary">Order:</p>
+
+                  <!-- ORDERS -->
+                  <v-row>
+                    <v-col cols="9">
+                      <v-autocomplete
+                        v-model="selected_item"
+                        label="Select Item"
+                        :items="items.data"
+                        item-text="attributes.name"
+                        return-object
+                        solo
+                      >
+                      </v-autocomplete>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-text-field
+                        v-model="order.quantity"
+                        label="Quantity"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-autocomplete
+                        v-model="selected_type_of_service"
+                        label="Select Service"
+                        :items="type_of_service_list"
+                        solo
+                      >
+                      </v-autocomplete>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-checkbox
+                        v-model="selected_is_borrow"
+                        label="Borrow"
+                        color="success"
+                        hide-details
+                      ></v-checkbox>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-checkbox
+                        v-model="selected_is_free"
+                        label="Free"
+                        color="success"
+                        hide-details
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="addToOrders()">
+                    Add To Cart
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
             </v-col>
+
+            <!-- Order List and Calculation -->
             <v-col cols="6">
+              <v-row>
+                <v-col>
+                  <p class="text-h6 text--primary">Order List:</p>
+                  <v-data-table
+                    :headers="headers"
+                    :items="form.orders"
+                    :items-per-page="10"
+                    group-by="item_name"
+                    class="elevation-1"
+                  >
+                    <template
+                      v-slot:group.header="{ items, headers, isOpen, toggle }"
+                    >
+                      <th
+                        :colspan="headers.length"
+                        @click="toggle"
+                        style="cursor: pointer"
+                      >
+                        <v-btn small icon :ref="items" :data-open="isOpen">
+                          <v-icon v-if="isOpen">mdi-chevron-up</v-icon>
+                          <v-icon v-else>mdi-chevron-down</v-icon>
+                        </v-btn>
+                        <span class="subtitle-1">
+                          <strong>{{ items[0].item_name }}</strong>
+                        </span>
+                        <span class="subtitle-1" style="float: right"
+                          ><strong
+                            >Total:
+                            {{ total_orders[items[0].item_name] }}</strong
+                          ></span
+                        >
+                      </th>
+                    </template>
+                    <template #body.append>
+                      <tr>
+                        <td colspan="3"></td>
+                        <td>Total:</td>
+                        <td>Kenneth SOlomon</td>
+                      </tr>
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </v-row>
               <v-btn @click="submitTransaction()">Submit</v-btn>
             </v-col>
           </v-row>
@@ -140,7 +196,6 @@ export default {
       credit: 0,
       discount: 0,
     },
-    compute_orders: [],
     order: {
       item_id: null,
       quantity: '',
@@ -154,6 +209,17 @@ export default {
     selected_item: '',
     selected_is_borrow: false,
     selected_is_free: false,
+
+    headers: [
+      { text: 'Name', value: 'item_name' },
+      { text: 'Free', value: 'is_free' },
+      { text: 'Borrow', value: 'is_borrow' },
+      { text: 'Type of Service', value: 'type_of_service' },
+      { text: 'Quantity', value: 'quantity' },
+      { text: 'Price', value: 'item_price' },
+    ],
+
+    total_orders: {},
   }),
 
   async fetch() {
@@ -161,6 +227,25 @@ export default {
     this.employees = await this.$axios.$get(
       `http://localhost:8000/api/employees`
     )
+  },
+
+  computed: {
+    buildOrderList() {
+      const total_order_list = {}
+      return this.form.orders.reduce((list, row) => {
+        total_order_list[row.item_name] =
+          (total_order_list[row.item_name] || 0) + row.quantity * row.item_price
+
+        list.push(row)
+        this.total_orders = total_order_list
+
+        return list
+      }, [])
+    },
+    totalPriceByItem() {
+      const total = Object.values(this.total_orders).reduce((a, b) => a + b, 0)
+      return total
+    },
   },
 
   created() {
@@ -173,13 +258,16 @@ export default {
       this.form.selected_status = this.form.selected_status.toLowerCase()
     },
     addToOrders() {
-      this.compute_orders.push(this.selected_item)
+      // Item
+      this.order.item_id = this.selected_item.id
+      this.order.item_name = this.selected_item.attributes.name
+      this.order.item_price = this.selected_item.attributes.price
 
       this.form.status = this.selected_status.toLowerCase()
-      this.order.item_id = this.selected_item.id
       this.order.type_of_service = this.selected_type_of_service.toLowerCase()
       this.order.is_borrow = this.selected_is_borrow
       this.order.is_free = this.selected_is_free
+
       this.form.orders.push(this.order)
 
       this.clearOrder()
