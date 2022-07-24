@@ -150,7 +150,7 @@
                         <span class="subtitle-1" style="float: right"
                           ><strong
                             >Total:
-                            {{ total_orders[items[0].item_name] }}</strong
+                            {{ buildTotalOrderByItem[items[0].item_name] }}</strong
                           ></span
                         >
                       </th>
@@ -219,7 +219,7 @@ export default {
       { text: 'Price', value: 'item_price' },
     ],
 
-    total_orders: {},
+    total_order_by_item: {},
   }),
 
   async fetch() {
@@ -230,20 +230,22 @@ export default {
   },
 
   computed: {
-    buildOrderList() {
+    buildTotalOrderByItem() {
       const total_order_list = {}
       return this.form.orders.reduce((list, row) => {
         total_order_list[row.item_name] =
           (total_order_list[row.item_name] || 0) + row.quantity * row.item_price
 
-        list.push(row)
-        this.total_orders = total_order_list
+        this.total_order_by_item = total_order_list
 
-        return list
+        return total_order_list
       }, [])
     },
-    totalPriceByItem() {
-      const total = Object.values(this.total_orders).reduce((a, b) => a + b, 0)
+    totalOrder() {
+      const total = Object.values(this.total_order_by_item).reduce(
+        (a, b) => a + b,
+        0
+      )
       return total
     },
   },
