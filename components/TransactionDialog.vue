@@ -233,8 +233,8 @@ export default {
 
     headers: [
       { text: 'Name', value: 'item_name' },
-      { text: 'Free', value: 'is_free' },
       { text: 'Borrow', value: 'is_borrow' },
+      { text: 'Free', value: 'is_free' },
       { text: 'Type of Service', value: 'type_of_service' },
       { text: 'Quantity', value: 'quantity' },
       { text: 'Price', value: 'item_price' },
