@@ -121,10 +121,16 @@
             </v-col>
 
             <!-- Order List and Calculation -->
-            <v-col cols="6">
+            <v-col cols="6" class="mt-2">
               <v-row>
                 <v-col>
-                  <p class="text-h6 text--primary">Order List:</p>
+                  <div class="d-flex display-block">
+                    <p class="text-h6 text--primary">Order List:</p>
+                    <v-spacer></v-spacer>
+                    <v-btn large color="primary" @click="checkOut()"
+                      >Checkout <v-icon class="ml-2">mdi-cart</v-icon></v-btn
+                    >
+                  </div>
                   <v-data-table
                     :headers="headers"
                     :items="form.orders"
@@ -150,27 +156,40 @@
                         <span class="subtitle-1" style="float: right"
                           ><strong
                             >Total:
-                            {{ buildTotalOrderByItem[items[0].item_name] }}</strong
+                            {{
+                              buildTotalOrderByItem[items[0].item_name]
+                            }}</strong
                           ></span
                         >
                       </th>
                     </template>
+                    <template v-slot:[`item.is_borrow`]="{ item }">
+                      {{ item.is_borrow ? '✅' : '❌' }}
+                    </template>
+                    <template v-slot:[`item.is_free`]="{ item }">
+                      {{ item.is_free ? '✅' : '❌' }}
+                    </template>
                     <template #body.append>
                       <tr>
-                        <td colspan="3"></td>
+                        <td></td>
+                        <td colspan="2"></td>
                         <td>Total:</td>
-                        <td>Kenneth SOlomon</td>
+                        <td>{{ totalOrder }}</td>
                       </tr>
                     </template>
                   </v-data-table>
                 </v-col>
               </v-row>
-              <v-btn @click="submitTransaction()">Submit</v-btn>
             </v-col>
           </v-row>
         </v-card-text>
       </v-card>
     </v-dialog>
+    <PaymentDialog
+      v-if="form.payment_dialog"
+      :form="form"
+      @closePaymentDialog="form.payment_dialog = false"
+    ></PaymentDialog>
   </v-row>
 </template>
 
@@ -195,6 +214,8 @@ export default {
       orders: [],
       credit: 0,
       discount: 0,
+      total_order_by_item: {},
+      payment_dialog: false,
     },
     order: {
       item_id: null,
@@ -218,8 +239,6 @@ export default {
       { text: 'Quantity', value: 'quantity' },
       { text: 'Price', value: 'item_price' },
     ],
-
-    total_order_by_item: {},
   }),
 
   async fetch() {
@@ -233,16 +252,21 @@ export default {
     buildTotalOrderByItem() {
       const total_order_list = {}
       return this.form.orders.reduce((list, row) => {
-        total_order_list[row.item_name] =
-          (total_order_list[row.item_name] || 0) + row.quantity * row.item_price
+        if (!row.is_free) {
+          total_order_list[row.item_name] =
+            (total_order_list[row.item_name] || 0) +
+            row.quantity * row.item_price
+        } else {
+          total_order_list[row.item_name] = total_order_list[row.item_name] || 0
+        }
 
-        this.total_order_by_item = total_order_list
+        this.form.total_order_by_item = total_order_list
 
         return total_order_list
       }, [])
     },
     totalOrder() {
-      const total = Object.values(this.total_order_by_item).reduce(
+      const total = Object.values(this.form.total_order_by_item).reduce(
         (a, b) => a + b,
         0
       )
@@ -256,8 +280,11 @@ export default {
   },
 
   methods: {
-    submitTransaction() {
-      this.form.selected_status = this.form.selected_status.toLowerCase()
+    closePaymentDialog(event) {
+      this.form.payment_dialog = false
+    },
+    checkOut() {
+      this.form.payment_dialog = true
     },
     addToOrders() {
       // Item
