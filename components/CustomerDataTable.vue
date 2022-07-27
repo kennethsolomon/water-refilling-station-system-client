@@ -96,10 +96,6 @@ export default {
         align: 'center',
       },
       { text: 'Borrow', value: 'gallon', align: 'center' },
-      {
-        text: 'Classification',
-        value: 'attributes.classification_info.name',
-      },
       { text: 'Contact Number', value: 'attributes.contact_number' },
       {
         text: 'Last Transaction',
