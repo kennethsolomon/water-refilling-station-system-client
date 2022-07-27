@@ -163,7 +163,9 @@
                           ><strong
                             >Total:
                             {{
-                              buildTotalOrderByItem[items[0].item_name]
+                              buildTotalOrderByItem[
+                                items[0].item_name
+                              ].toLocaleString('en-US')
                             }}</strong
                           ></span
                         >
@@ -187,9 +189,11 @@
                     <template #body.append>
                       <tr>
                         <td></td>
-                        <td colspan="2"></td>
-                        <td>Total:</td>
-                        <td>{{ totalOrder }}</td>
+                        <td colspan="3"></td>
+                        <td><h1>Total:</h1></td>
+                        <td>
+                          <h1>{{ totalOrder }}</h1>
+                        </td>
                       </tr>
                     </template>
                   </v-data-table>
@@ -288,7 +292,7 @@ export default {
         (a, b) => a + b,
         0
       )
-      return total
+      return total.toLocaleString('en-US')
     },
   },
 
@@ -308,7 +312,19 @@ export default {
       // Item
       this.order.item_id = this.selected_item.id
       this.order.item_name = this.selected_item.attributes.name
-      this.order.item_price = this.selected_item.attributes.price
+      if (this.selected_is_purchase) {
+        this.order.item_price = this.selected_item.attributes.purchase_price
+      } else if (
+        this.selected_type_of_service.toLowerCase() === 'delivery' &&
+        !this.selected_is_purchase
+      ) {
+        this.order.item_price = this.selected_item.attributes.delivery_price
+      } else if (
+        this.selected_type_of_service.toLowerCase() === 'pickup' &&
+        !this.selected_is_purchase
+      ) {
+        this.order.item_price = this.selected_item.attributes.pickup_price
+      }
 
       this.form.status = this.selected_status.toLowerCase()
       this.order.type_of_service = this.selected_type_of_service.toLowerCase()
