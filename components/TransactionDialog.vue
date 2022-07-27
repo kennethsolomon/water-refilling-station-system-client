@@ -206,7 +206,7 @@ export default {
     items: [],
     employees: [],
     status: ['Active', 'Done'],
-    type_of_service_list: ['Delivery', 'Pickup', 'Purchase'],
+    type_of_service_list: ['Delivery', 'Pickup'],
     form: {
       customer_id: '',
       employee_id: '',

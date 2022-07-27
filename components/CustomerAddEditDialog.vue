@@ -10,14 +10,7 @@
           ></v-card-title
         >
         <v-card-text>
-          <!-- TODO: Make Loading Component -->
-          <div v-if="$fetchState.pending" width="40%" height="100%">
-            Loading ...
-          </div>
-          <div v-else-if="$fetchState.error">
-            Error: {{ $fetchState.error.message }}
-          </div>
-          <v-container v-else>
+          <v-container>
             <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
               <v-form ref="form" @submit.prevent="createUpdateCustomer">
                 <v-row>
