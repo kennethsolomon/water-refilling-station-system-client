@@ -93,7 +93,7 @@
                       >
                       </v-autocomplete>
                     </v-col>
-                    <v-col cols="3">
+                    <v-col cols="2">
                       <v-checkbox
                         v-model="selected_is_borrow"
                         label="Borrow"
@@ -101,7 +101,15 @@
                         hide-details
                       ></v-checkbox>
                     </v-col>
-                    <v-col cols="3">
+                    <v-col cols="2">
+                      <v-checkbox
+                        v-model="selected_is_purchase"
+                        label="Purchase"
+                        color="success"
+                        hide-details
+                      ></v-checkbox>
+                    </v-col>
+                    <v-col cols="2">
                       <v-checkbox
                         v-model="selected_is_free"
                         label="Free"
@@ -138,15 +146,13 @@
                     group-by="item_name"
                     class="elevation-1"
                   >
-                    <template
-                      v-slot:group.header="{ items, headers, isOpen, toggle }"
-                    >
+                    <template v-slot:group.header="{ items, isOpen, toggle }">
                       <th
                         :colspan="headers.length"
-                        @click="toggle"
                         style="cursor: pointer"
+                        @click="toggle"
                       >
-                        <v-btn small icon :ref="items" :data-open="isOpen">
+                        <v-btn :ref="items" small icon :data-open="isOpen">
                           <v-icon v-if="isOpen">mdi-chevron-up</v-icon>
                           <v-icon v-else>mdi-chevron-down</v-icon>
                         </v-btn>
@@ -163,11 +169,20 @@
                         >
                       </th>
                     </template>
-                    <template v-slot:[`item.is_borrow`]="{ item }">
+                    <template #[`item.is_borrow`]="{ item }">
                       {{ item.is_borrow ? '✅' : '❌' }}
                     </template>
-                    <template v-slot:[`item.is_free`]="{ item }">
+                    <template #[`item.is_purchase`]="{ item }">
+                      {{ item.is_purchase ? '✅' : '❌' }}
+                    </template>
+                    <template #[`item.is_free`]="{ item }">
                       {{ item.is_free ? '✅' : '❌' }}
+                    </template>
+                    <template #[`item.type_of_service`]="{ item }">
+                      {{
+                        item.type_of_service.charAt(0).toUpperCase() +
+                        item.type_of_service.slice(1)
+                      }}
                     </template>
                     <template #body.append>
                       <tr>
@@ -222,6 +237,7 @@ export default {
       quantity: '',
       type_of_service: '',
       is_borrow: false,
+      is_purchase: false,
       is_free: false,
     },
 
@@ -229,15 +245,17 @@ export default {
     selected_type_of_service: 'Delivery',
     selected_item: '',
     selected_is_borrow: false,
+    selected_is_purchase: false,
     selected_is_free: false,
 
     headers: [
       { text: 'Name', value: 'item_name' },
-      { text: 'Borrow', value: 'is_borrow' },
-      { text: 'Free', value: 'is_free' },
       { text: 'Type of Service', value: 'type_of_service' },
       { text: 'Quantity', value: 'quantity' },
       { text: 'Price', value: 'item_price' },
+      { text: 'Borrow', value: 'is_borrow' },
+      { text: 'Purchase', value: 'is_purchase' },
+      { text: 'Free', value: 'is_free' },
     ],
   }),
 
@@ -295,6 +313,7 @@ export default {
       this.form.status = this.selected_status.toLowerCase()
       this.order.type_of_service = this.selected_type_of_service.toLowerCase()
       this.order.is_borrow = this.selected_is_borrow
+      this.order.is_purchase = this.selected_is_purchase
       this.order.is_free = this.selected_is_free
 
       this.form.orders.push(this.order)
@@ -308,6 +327,7 @@ export default {
       this.selected_status = 'Active'
       this.selected_type_of_service = 'Delivery'
       this.selected_is_borrow = false
+      this.selected_is_purchase = false
       this.selected_is_free = false
     },
     // confirmDelete(choice) {
