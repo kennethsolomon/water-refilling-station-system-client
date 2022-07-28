@@ -104,6 +104,8 @@
                     <v-col cols="2">
                       <v-checkbox
                         v-model="selected_is_purchase"
+                        @click="disableCheckbox('purchase')"
+                        :disabled="checkbox_purchase"
                         label="Purchase"
                         color="success"
                         hide-details
@@ -112,6 +114,8 @@
                     <v-col cols="2">
                       <v-checkbox
                         v-model="selected_is_free"
+                        @click="disableCheckbox('free')"
+                        :disabled="checkbox_free"
                         label="Free"
                         color="success"
                         hide-details
@@ -267,6 +271,8 @@ export default {
   data: () => ({
     dialog: false,
     menu: false,
+    checkbox_free: false,
+    checkbox_purchase: false,
     items: [],
     employees: [],
     status: ['Active', 'Done'],
@@ -352,6 +358,13 @@ export default {
   },
 
   methods: {
+    disableCheckbox(checkbox) {
+      if (checkbox === 'free') {
+        this.checkbox_purchase = !this.checkbox_purchase
+      } else if (checkbox === 'purchase') {
+        this.checkbox_free = !this.checkbox_free
+      }
+    },
     closePaymentDialog(event) {
       this.form.payment_dialog = false
     },
@@ -395,6 +408,8 @@ export default {
       this.selected_is_borrow = false
       this.selected_is_purchase = false
       this.selected_is_free = false
+      this.checkbox_free = false
+      this.checkbox_purchase = false
     },
     // confirmDelete(choice) {
     //   this.$emit('confirmDelete', choice)
