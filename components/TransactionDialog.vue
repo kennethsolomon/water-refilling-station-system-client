@@ -121,8 +121,13 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="addToOrders()">
-                    Add To Cart
+                  <v-btn
+                    class="ma-3"
+                    large
+                    color="primary"
+                    @click="addToOrders()"
+                  >
+                    Add to Cart<v-icon class="ml-2">mdi-cart-plus</v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -139,6 +144,45 @@
                       >Checkout <v-icon class="ml-2">mdi-cart</v-icon></v-btn
                     >
                   </div>
+
+                  <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :return-value.sync="form.transaction_date"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="form.transaction_date"
+                        label="Transaction Date"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="form.transaction_date"
+                      no-title
+                      scrollable
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menu = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save(form.transaction_date)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+
                   <v-data-table
                     :headers="headers"
                     :items="form.orders"
@@ -222,6 +266,7 @@ export default {
   },
   data: () => ({
     dialog: false,
+    menu: false,
     items: [],
     employees: [],
     status: ['Active', 'Done'],
@@ -234,6 +279,11 @@ export default {
       credit: 0,
       discount: 0,
       total_order_by_item: {},
+      transaction_date: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
       payment_dialog: false,
     },
     order: {
