@@ -12,6 +12,7 @@
               <h1>Credit:</h1>
               <v-text-field
                 v-model="form_data.credit"
+                :disabled="true"
                 type="number"
                 hide-details="auto"
               ></v-text-field>
@@ -86,7 +87,7 @@ export default {
     },
     change() {
       if (this.customer_cash > 0) {
-        if (this.customer_cash - this.total_order > 0) {
+        if (this.customer_cash - this.sub_total > 0) {
           return this.customer_cash - this.sub_total
         }
       }
@@ -108,13 +109,14 @@ export default {
 
   watch: {
     customer_cash(new_val, old_val) {
-      if (new_val > this.total_order) {
+      if (new_val > this.sub_total) {
         this.form_data.credit = 0
       } else {
         this.form_data.credit = this.sub_total - new_val
       }
     },
-    'form_data.discount'(new_val) {
+    'form_data.discount'(new_val, old_val) {
+      this.customer_cash = null
       this.sub_total = this.total_order - new_val
       this.form_data.credit = this.total_order - new_val
     },
