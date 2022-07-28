@@ -59,22 +59,6 @@
                       </v-autocomplete>
                     </ValidationProvider>
                   </v-col>
-                  <!-- Transfer to Payment Confirm -->
-                  <v-col cols="6">
-                    <v-text-field
-                      v-model="form.credit"
-                      label="Credit"
-                      type="number"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      v-model="form.discount"
-                      label="Discount"
-                      type="number"
-                    ></v-text-field>
-                  </v-col>
-                  <!-- End -->
                 </v-row>
 
                 <v-card class="mx-auto mt-3">
@@ -142,7 +126,6 @@
                           label="Borrow"
                           color="success"
                           hide-details
-                          :error-messages="errors"
                           :success="valid"
                         ></v-checkbox>
                       </v-col>
@@ -154,7 +137,6 @@
                           label="Purchase"
                           color="success"
                           hide-details
-                          :error-messages="errors"
                           :success="valid"
                         ></v-checkbox>
                       </v-col>
@@ -166,7 +148,6 @@
                           label="Free"
                           color="success"
                           hide-details
-                          :error-messages="errors"
                           :success="valid"
                         ></v-checkbox>
                       </v-col>
@@ -334,8 +315,8 @@ export default {
       employee_id: '',
       status: '',
       orders: [],
-      credit: 0,
-      discount: 0,
+      credit: null,
+      discount: null,
       total_order_by_item: {},
       transaction_date: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
