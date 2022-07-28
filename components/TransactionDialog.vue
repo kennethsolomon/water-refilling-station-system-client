@@ -126,7 +126,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn
-                    class="ma-3"
+                    class="ma-3 pa-4"
                     large
                     color="primary"
                     @click="addToOrders()"
