@@ -19,122 +19,174 @@
         <v-card-text>
           <v-row class="pa-5">
             <v-col cols="6">
-              <v-row>
-                <v-col cols="8">
-                  <v-autocomplete
-                    v-model="form.employee_id"
-                    label="Select Employee"
-                    :items="employees.data"
-                    item-value="id"
-                    item-text="attributes.fullname"
-                    hide-details
-                    solo
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col cols="4">
-                  <v-autocomplete
-                    v-model="selected_status"
-                    label="Select Status"
-                    hide-details
-                    :items="status"
-                    solo
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="form.credit"
-                    label="Credit"
-                    type="number"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="form.discount"
-                    label="Discount"
-                    type="number"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-card class="mx-auto mt-3">
-                <v-card-text>
-                  <p class="text-h6 text--primary">Order:</p>
-
-                  <!-- ORDERS -->
-                  <v-row>
-                    <v-col cols="9">
+              <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
+                <v-row>
+                  <v-col cols="8">
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      rules="required"
+                      name="Employee"
+                    >
                       <v-autocomplete
-                        v-model="selected_item"
-                        label="Select Item"
-                        :items="items.data"
-                        item-text="attributes.name"
-                        return-object
+                        v-model="form.employee_id"
+                        label="Select Employee"
+                        :items="employees.data"
+                        item-value="id"
+                        item-text="attributes.fullname"
+                        hide-details
                         solo
+                        :error-messages="errors"
+                        :success="valid"
                       >
                       </v-autocomplete>
-                    </v-col>
-                    <v-col cols="3">
-                      <v-text-field
-                        v-model="order.quantity"
-                        label="Quantity"
-                        type="number"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="4">
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      rules="required"
+                      name="Status"
+                    >
                       <v-autocomplete
-                        v-model="selected_type_of_service"
-                        label="Select Service"
-                        :items="type_of_service_list"
+                        v-model="selected_status"
+                        label="Select Status"
+                        hide-details
+                        :items="status"
                         solo
+                        :error-messages="errors"
+                        :success="valid"
                       >
                       </v-autocomplete>
-                    </v-col>
-                    <v-col cols="2">
-                      <v-checkbox
-                        v-model="selected_is_borrow"
-                        label="Borrow"
-                        color="success"
-                        hide-details
-                      ></v-checkbox>
-                    </v-col>
-                    <v-col cols="2">
-                      <v-checkbox
-                        v-model="selected_is_purchase"
-                        @click="disableCheckbox('purchase')"
-                        :disabled="checkbox_purchase"
-                        label="Purchase"
-                        color="success"
-                        hide-details
-                      ></v-checkbox>
-                    </v-col>
-                    <v-col cols="2">
-                      <v-checkbox
-                        v-model="selected_is_free"
-                        @click="disableCheckbox('free')"
-                        :disabled="checkbox_free"
-                        label="Free"
-                        color="success"
-                        hide-details
-                      ></v-checkbox>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    class="ma-3 pa-4"
-                    large
-                    color="primary"
-                    @click="addToOrders()"
-                  >
-                    Add to Cart<v-icon class="ml-2">mdi-cart-plus</v-icon>
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+                    </ValidationProvider>
+                  </v-col>
+                  <!-- Transfer to Payment Confirm -->
+                  <v-col cols="6">
+                    <v-text-field
+                      v-model="form.credit"
+                      label="Credit"
+                      type="number"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field
+                      v-model="form.discount"
+                      label="Discount"
+                      type="number"
+                    ></v-text-field>
+                  </v-col>
+                  <!-- End -->
+                </v-row>
+
+                <v-card class="mx-auto mt-3">
+                  <v-card-text>
+                    <p class="text-h6 text--primary">Order:</p>
+
+                    <!-- ORDERS -->
+                    <v-row>
+                      <v-col cols="9">
+                        <ValidationProvider
+                          v-slot="{ errors }"
+                          rules="required"
+                          name="Item"
+                        >
+                          <v-autocomplete
+                            v-model="selected_item"
+                            label="Select Item"
+                            :items="items.data"
+                            item-text="attributes.name"
+                            return-object
+                            solo
+                            :error-messages="errors"
+                            :success="valid"
+                          >
+                          </v-autocomplete>
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="3">
+                        <ValidationProvider
+                          v-slot="{ errors }"
+                          rules="required"
+                          name="Quantity"
+                        >
+                          <v-text-field
+                            v-model="order.quantity"
+                            label="Quantity"
+                            type="number"
+                            :error-messages="errors"
+                            :success="valid"
+                          ></v-text-field>
+                        </ValidationProvider>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <ValidationProvider
+                          v-slot="{ errors }"
+                          rules="required"
+                          name="Type of Service"
+                        >
+                          <v-autocomplete
+                            v-model="selected_type_of_service"
+                            label="Select Service"
+                            :items="type_of_service_list"
+                            solo
+                            :error-messages="errors"
+                            :success="valid"
+                          >
+                          </v-autocomplete>
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-checkbox
+                          v-model="selected_is_borrow"
+                          label="Borrow"
+                          color="success"
+                          hide-details
+                          :error-messages="errors"
+                          :success="valid"
+                        ></v-checkbox>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-checkbox
+                          v-model="selected_is_purchase"
+                          @click="disableCheckbox('purchase')"
+                          :disabled="checkbox_purchase"
+                          label="Purchase"
+                          color="success"
+                          hide-details
+                          :error-messages="errors"
+                          :success="valid"
+                        ></v-checkbox>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-checkbox
+                          v-model="selected_is_free"
+                          @click="disableCheckbox('free')"
+                          :disabled="checkbox_free"
+                          label="Free"
+                          color="success"
+                          hide-details
+                          :error-messages="errors"
+                          :success="valid"
+                        ></v-checkbox>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      class="ma-3 pa-4"
+                      large
+                      color="primary"
+                      @click="addToOrders()"
+                      :dark="valid"
+                      :disabled="invalid"
+                    >
+                      Add to Cart<v-icon class="ml-2">mdi-cart-plus</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </ValidationObserver>
             </v-col>
 
             <!-- Order List and Calculation -->
@@ -402,6 +454,7 @@ export default {
     },
     clearOrder() {
       this.order = {}
+      this.$refs.observer.reset()
       this.selected_item = ''
       this.selected_status = 'Active'
       this.selected_type_of_service = 'Delivery'
