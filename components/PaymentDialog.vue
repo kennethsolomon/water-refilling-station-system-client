@@ -3,50 +3,95 @@
     <v-dialog persistent v-model="dialog" width="500">
       <v-card>
         <v-card-title class="text-h5 primary"
-          >Checkout <v-icon class="ml-2">mdi-cash</v-icon></v-card-title
+          >Checkout <v-icon class="ml-2">mdi-cash</v-icon>
+          <v-spacer></v-spacer>
+          <v-icon @click="closeDialog">mdi-close</v-icon></v-card-title
         >
 
         <v-card-text>
-          <v-row class="pa-5">
-            <v-col cols="6">
-              <h1>Credit:</h1>
-              <v-text-field
-                v-model="form_data.credit"
-                :disabled="true"
-                type="number"
-                hide-details="auto"
-              ></v-text-field>
-            </v-col>
-            <v-col class="mb-5" cols="6">
-              <h1>Discount:</h1>
-              <v-text-field
-                v-model="form_data.discount"
-                type="number"
-              ></v-text-field>
-            </v-col>
+          <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
+            <v-row class="pa-5">
+              <v-col cols="6">
+                <h2><v-icon>mdi-cash-plus</v-icon> Credit:</h2>
+                <v-text-field
+                  v-model="form_data.credit"
+                  :disabled="true"
+                  type="number"
+                  hide-details="auto"
+                ></v-text-field>
+              </v-col>
 
-            <v-col class="mb-5" cols="12">
-              <h1>Sub Total: {{ sub_total.toLocaleString('en-US') }}</h1>
-            </v-col>
-            <v-col cols="12">
-              <h1>Cash:</h1>
-              <v-text-field
-                v-model="customer_cash"
-                type="number"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <h1>Change: {{ change.toLocaleString('en-US') }}</h1>
-            </v-col>
-          </v-row>
+              <v-col class="mb-5" cols="6">
+                <h2><v-icon>mdi-cash-minus</v-icon> Discount:</h2>
+
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Discount"
+                >
+                  <v-text-field
+                    v-model.number="form_data.discount"
+                    type="number"
+                    :error-messages="errors"
+                    :success="valid"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+
+              <v-col class="mb-5" cols="12">
+                <v-alert
+                  color="error"
+                  dark
+                  icon="mdi-cash"
+                  border="left"
+                  prominent
+                >
+                  <h1>Sub Total: {{ sub_total.toLocaleString('en-US') }}</h1>
+                </v-alert>
+              </v-col>
+
+              <v-col cols="12">
+                <h2>
+                  <v-icon>mdi-account-cash-outline</v-icon> Customers Cash:
+                </h2>
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="Cash"
+                >
+                  <v-text-field
+                    v-model.number="customer_cash"
+                    type="number"
+                    :error-messages="errors"
+                    :success="valid"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+
+              <v-col cols="12">
+                <v-alert
+                  color="primary"
+                  dark
+                  icon="mdi-cash-refund"
+                  border="left"
+                >
+                  <h2>Change: {{ change.toLocaleString('en-US') }}</h2>
+                </v-alert>
+              </v-col>
+
+              <v-col class="d-flex justify-end" cols="12">
+                <v-btn
+                  color="primary"
+                  @click="confirmPayment"
+                  :dark="valid"
+                  :disabled="invalid"
+                >
+                  Confirm Pay <v-icon class="ml-2">mdi-cash-check</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </ValidationObserver>
         </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeDialog"> I accept </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -62,7 +107,9 @@ export default {
   },
   data: () => ({
     dialog: false,
-    form_data: {},
+    form_data: {
+      discount: 0,
+    },
     customer_cash: 0,
     total_order: 0,
     sub_total: 0,
@@ -99,11 +146,21 @@ export default {
     this.dialog = this.form.payment_dialog
     this.form_data = this.form
     this.form_data.credit = this.totalOrder
+    this.form_data.discount = 0
   },
   methods: {
     closeDialog() {
       this.dialog = false
       this.$emit('closePaymentDialog')
+    },
+    confirmPayment() {
+      this.$axios
+        .$post('update_or_create_transaction', this.form_data)
+        .then((response) => {
+          console.log(response)
+          this.closeDialog()
+          this.$emit('closeTransactionDialog')
+        })
     },
   },
 

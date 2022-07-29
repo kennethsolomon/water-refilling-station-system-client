@@ -184,7 +184,9 @@ export default {
       this.delete_dialog_data.delete_item_index = null
     },
     // END DELETE DIALOG
-    closeTransactionDialog(event) {},
+    closeTransactionDialog(event) {
+      this.transaction_dialog_data.transaction_dialog = false
+    },
     transactionDialog(item) {
       this.transaction_dialog_data.customer = item
       this.transaction_dialog_data.transaction_dialog = true

@@ -10,11 +10,11 @@
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title
-            >{{
-              transactionDialogData.customer.attributes.fullname
-            }}
-            Transactions 💸</v-toolbar-title
-          >
+            >{{ transactionDialogData.customer.attributes.fullname }}
+            Transactions 💸
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-icon @click="closeTransactionDialog">mdi-close</v-icon>
         </v-toolbar>
         <v-card-text>
           <v-row class="pa-5">
@@ -177,7 +177,11 @@
                   <div class="d-flex display-block">
                     <p class="text-h6 text--primary">Order List:</p>
                     <v-spacer></v-spacer>
-                    <v-btn large color="primary" @click="checkOut()"
+                    <v-btn
+                      large
+                      color="primary"
+                      @click="checkOut()"
+                      :disabled="form.orders.length <= 0"
                       >Checkout <v-icon class="ml-2">mdi-cart</v-icon></v-btn
                     >
                   </div>
@@ -267,10 +271,17 @@
                         item.type_of_service.slice(1)
                       }}
                     </template>
+
+                    <template #[`item.actions`]="{ item, index }">
+                      <v-icon @click="deleteOrder(item, index)" color="error"
+                        >mdi-trash-can-outline</v-icon
+                      >
+                      <!-- <v-btn>Test {{ item }} {{ index }}</v-btn> -->
+                    </template>
                     <template #body.append>
                       <tr>
                         <td></td>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                         <td><h1>Total:</h1></td>
                         <td>
                           <h1>{{ totalOrder }}</h1>
@@ -289,6 +300,7 @@
       v-if="form.payment_dialog"
       :form="form"
       @closePaymentDialog="form.payment_dialog = false"
+      @closeTransactionDialog="closeTransactionDialog"
     ></PaymentDialog>
   </v-row>
 </template>
@@ -349,6 +361,7 @@ export default {
       { text: 'Borrow', value: 'is_borrow' },
       { text: 'Purchase', value: 'is_purchase' },
       { text: 'Free', value: 'is_free' },
+      { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
   }),
 
@@ -391,6 +404,12 @@ export default {
   },
 
   methods: {
+    deleteOrder(item, index) {
+      // const index = this.form.orders.indexOf(item)
+      this.form.total_order_by_item[item.item_name] -=
+        item.item_price * Number(item.quantity)
+      this.form.orders.splice(index, 1)
+    },
     disableCheckbox(checkbox) {
       if (checkbox === 'free') {
         this.checkbox_purchase = !this.checkbox_purchase
@@ -444,6 +463,9 @@ export default {
       this.selected_is_free = false
       this.checkbox_free = false
       this.checkbox_purchase = false
+    },
+    closeTransactionDialog() {
+      this.$emit('closeTransactionDialog')
     },
     // confirmDelete(choice) {
     //   this.$emit('confirmDelete', choice)
