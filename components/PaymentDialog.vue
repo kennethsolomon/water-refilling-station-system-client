@@ -2,10 +2,12 @@
   <div class="text-center">
     <v-dialog persistent v-model="dialog" width="500">
       <v-card>
-        <v-card-title class="text-h5 primary"
-          >Checkout <v-icon class="ml-2">mdi-cash</v-icon>
+        <v-card-title style="color: white" class="text-h5 primary"
+          >Checkout <v-icon color="white" class="ml-2">mdi-cash</v-icon>
           <v-spacer></v-spacer>
-          <v-icon @click="closeDialog">mdi-close</v-icon></v-card-title
+          <v-icon color="white" @click="closeDialog"
+            >mdi-close</v-icon
+          ></v-card-title
         >
 
         <v-card-text>
@@ -149,19 +151,34 @@ export default {
     this.form_data.discount = 0
   },
   methods: {
-    closeDialog() {
-      this.dialog = false
-      this.$emit('closePaymentDialog')
-    },
     confirmPayment() {
       this.$axios
         .$post('update_or_create_transaction', this.form_data)
         .then((response) => {
-          console.log(response)
           this.closeDialog()
+          this.paymentSnackbar()
           this.$store.dispatch('callGetCustomers')
           this.$emit('closeTransactionDialog')
         })
+        .finally(() => {
+          setTimeout(this.$unSetSnackbar, 7000, this.$store)
+        })
+    },
+
+    paymentSnackbar() {
+      this.$store.commit('SET_SNACKBAR', {
+        snackbar: {
+          status: true,
+          text: 'Payment successfully saved!',
+          timeout: 5000,
+          color: 'primary',
+        },
+      })
+    },
+
+    closeDialog() {
+      this.dialog = false
+      this.$emit('closePaymentDialog')
     },
   },
 
