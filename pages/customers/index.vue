@@ -61,7 +61,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      customers: 'getAppCustomers',
+      customers: 'getCustomers',
     }),
   },
 

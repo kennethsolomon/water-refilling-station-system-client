@@ -3,7 +3,7 @@ import getters from './getters';
 import mutations from './mutations';
 
 const defaultState = {
-  appCustomers: []
+  customers: []
 }
 
 const inBrowser = typeof window !== 'undefined';

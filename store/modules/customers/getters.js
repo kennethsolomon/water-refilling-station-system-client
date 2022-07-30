@@ -1,3 +1,3 @@
 export default {
-  getAppCustomers: state => state.customers
+  getCustomers: state => state.customers
 }
