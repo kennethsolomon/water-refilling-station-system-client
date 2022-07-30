@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'no-unused-expressions': 'off',
     'vue/multi-word-component-names': 'off',
-    'camelcase': 'off'
+    'camelcase': 'off',
+    'vue/valid-v-slot': 'off'
   },
 }

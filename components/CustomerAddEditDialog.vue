@@ -10,14 +10,7 @@
           ></v-card-title
         >
         <v-card-text>
-          <!-- TODO: Make Loading Component -->
-          <div v-if="$fetchState.pending" width="40%" height="100%">
-            Loading ...
-          </div>
-          <div v-else-if="$fetchState.error">
-            Error: {{ $fetchState.error.message }}
-          </div>
-          <v-container v-else>
+          <v-container>
             <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
               <v-form ref="form" @submit.prevent="createUpdateCustomer">
                 <v-row>
@@ -84,24 +77,6 @@
                   <v-col cols="4">
                     <ValidationProvider
                       v-slot="{ errors }"
-                      rules="required"
-                      name="Classification"
-                    >
-                      <v-select
-                        v-model="form.classification_id"
-                        :items="classifications.data"
-                        label="Classification"
-                        item-text="attributes.name"
-                        item-value="id"
-                        hide-details="auto"
-                        :error-messages="errors"
-                        :success="valid"
-                      ></v-select>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="4">
-                    <ValidationProvider
-                      v-slot="{ errors }"
                       rules="required|digits:11"
                       name="Contact Number"
                     >
@@ -156,10 +131,8 @@ export default {
     return {
       dialog: false,
 
-      classifications: [],
       selected_customer: {},
       form: {
-        classification_id: null,
         firstname: null,
         middlename: null,
         lastname: null,
@@ -167,12 +140,6 @@ export default {
         contact_number: null,
       },
     }
-  },
-
-  async fetch() {
-    this.classifications = await this.$axios.$get(
-      `http://localhost:8000/api/classifications`
-    )
   },
 
   created() {
@@ -187,14 +154,12 @@ export default {
     fillForm() {
       this.form = Object.assign({}, this.selected_customer.attributes)
       this.form.id = this.selected_customer.id
-      this.form.classification_id =
-        this.selected_customer.attributes.classification_info.id
     },
     createUpdateCustomer() {
       this.$axios
         .$post('update_or_create_customer', this.form)
         .then((response) => {
-          this.$emit('fetch-new-customer-data')
+          this.$store.dispatch('callGetCustomers')
           this.$emit('close-create-customer-dialog')
         })
     },

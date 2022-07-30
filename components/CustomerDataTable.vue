@@ -1,6 +1,11 @@
 <template>
   <div>
+    <div v-if="$fetchState.pending">Loading ...</div>
+    <div v-else-if="$fetchState.error">
+      Error: {{ $fetchState.error.message }}
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="buildCustomers"
       :search="search"
@@ -42,7 +47,9 @@
       <template #[`item.actions`]="{ item }">
         <v-row>
           <v-col cols="12">
-            <v-icon medium class="mr-1"> mdi-water-plus </v-icon>
+            <v-icon medium class="mr-1" @click="transactionDialog(item)">
+              mdi-water-plus
+            </v-icon>
             <v-icon
               medium
               class="mr-1"
@@ -57,26 +64,26 @@
           </v-col>
         </v-row>
       </template>
-      <template #no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
+      <!-- <template #no-data>
+        <v-btn color="primary"> Reset </v-btn>
+      </template> -->
     </v-data-table>
     <DeleteConfirmationDialog
       v-if="delete_dialog_data.delete_confirmation_dialog"
       :delete-dialog-data="delete_dialog_data"
       @confirmDelete="confirmDelete($event)"
     ></DeleteConfirmationDialog>
+    <TransactionDialog
+      v-if="transaction_dialog_data.transaction_dialog"
+      :transaction-dialog-data="transaction_dialog_data"
+      @closeTransactionDialog="closeTransactionDialog($event)"
+    ></TransactionDialog>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  props: {
-    customers: {
-      type: Object,
-      default: () => {},
-    },
-  },
   data: () => ({
     search: null,
     headers: [
@@ -89,10 +96,6 @@ export default {
         align: 'center',
       },
       { text: 'Borrow', value: 'gallon', align: 'center' },
-      {
-        text: 'Classification',
-        value: 'attributes.classification_info.name',
-      },
       { text: 'Contact Number', value: 'attributes.contact_number' },
       {
         text: 'Last Transaction',
@@ -100,7 +103,6 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
-    customers_list: [],
     // DELETE DIALOG
     delete_dialog_data: {
       delete_item_id: null,
@@ -108,10 +110,23 @@ export default {
       delete_confirmation_dialog: false,
       delete_title: null,
     },
+    // TRANSACTION DIALOG
+    transaction_dialog_data: {
+      transaction_dialog: false,
+      customer: null,
+    },
   }),
+
+  async fetch() {
+    await this.$store.dispatch('callGetCustomers')
+  },
+
   computed: {
+    ...mapGetters({
+      customers: 'getCustomers',
+    }),
     buildCustomers() {
-      return this.customers_list.reduce((list, row) => {
+      return this.customers.data.reduce((list, row) => {
         let total_credit = 0
 
         // Compute Total Credits
@@ -125,9 +140,7 @@ export default {
       }, [])
     },
   },
-  created() {
-    this.customers_list = this.customers.data
-  },
+
   methods: {
     showBarrowListDialog(customer_id) {
       this.$emit('show-customer-borrow-list-dialog')
@@ -159,10 +172,7 @@ export default {
             `http://localhost:8000/api/delete_customer/${this.delete_dialog_data.delete_item_id}`
           )
           .then(() => {
-            this.customers_list.splice(
-              this.delete_dialog_data.delete_item_index,
-              1
-            )
+            this.$store.dispatch('callGetCustomers')
             this.resetDeleteDialog()
           })
       } else {
@@ -176,6 +186,13 @@ export default {
       this.delete_dialog_data.delete_item_index = null
     },
     // END DELETE DIALOG
+    closeTransactionDialog(event) {
+      this.transaction_dialog_data.transaction_dialog = false
+    },
+    transactionDialog(item) {
+      this.transaction_dialog_data.customer = item
+      this.transaction_dialog_data.transaction_dialog = true
+    },
   },
 }
 </script>
