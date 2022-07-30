@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'CustomersPage',
   data: () => ({
@@ -49,13 +50,19 @@ export default {
     customer_create_update_dialog: false,
     mode: null,
     customer_id: null,
-    customers: [],
     selected_customer: {},
   }),
   async fetch() {
-    this.customers = await this.$axios.$get(
+    const customers = await this.$axios.$get(
       'http://localhost:8000/api/customers'
     )
+    this.$store.commit('SET_CUSTOMERS', customers)
+  },
+
+  computed: {
+    ...mapGetters({
+      customers: 'getAppCustomers',
+    }),
   },
 
   methods: {
