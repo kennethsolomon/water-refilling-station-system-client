@@ -2,17 +2,19 @@
   <div class="text-center">
     <v-dialog v-model="dialog" width="500" persistent>
       <v-card>
-        <v-card-title class="text-h5 primary"
+        <v-card-title style="color: white" class="text-h5 primary"
           >Customer Borrow List
           <v-spacer></v-spacer>
-          <v-icon @click="$emit('close-customer-borrow-list-dialog')"
+          <v-icon
+            color="white"
+            @click="$emit('close-customer-borrow-list-dialog')"
             >mdi-close</v-icon
           ></v-card-title
         >
         <v-card-text>
           <v-container>
             <!-- BUG: #:default not working -->
-            <v-simple-table dark>
+            <v-simple-table>
               <template v-slot:default>
                 <thead>
                   <tr>

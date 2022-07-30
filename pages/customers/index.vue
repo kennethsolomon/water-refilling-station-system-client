@@ -1,36 +1,28 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-card class="ma-3">
-        <v-card-text>
-          <CustomerDataTable
-            @customer-create-dialog="customer_create_update_dialog = true"
-            @customer-update-dialog="customer_create_update_dialog = true"
-            @set-mode="setMode($event)"
-            @show-customer-borrow-list-dialog="
-              customer_borrow_list_dialog = true
-            "
-            @set-customer-id="setCustomerId($event)"
-            @selected-customer="customerEdit($event)"
-          ></CustomerDataTable>
-        </v-card-text>
-        <CustomerBorrowListDialog
-          v-if="customer_borrow_list_dialog"
-          :show-customer-borrow-list-dialog="customer_borrow_list_dialog"
-          :customer-id="customer_id"
-          @close-customer-borrow-list-dialog="
-            customer_borrow_list_dialog = false
-          "
-        ></CustomerBorrowListDialog>
-        <CustomerAddEditDialog
-          v-if="customer_create_update_dialog"
-          :customer-create-update-dialog="customer_create_update_dialog"
-          :selected-customer="selected_customer"
-          :mode="mode"
-          @close-create-customer-dialog="customer_create_update_dialog = false"
-        >
-        </CustomerAddEditDialog>
-      </v-card>
+      <CustomerDataTable
+        @customer-create-dialog="customer_create_update_dialog = true"
+        @customer-update-dialog="customer_create_update_dialog = true"
+        @set-mode="setMode($event)"
+        @show-customer-borrow-list-dialog="customer_borrow_list_dialog = true"
+        @set-customer-id="setCustomerId($event)"
+        @selected-customer="customerEdit($event)"
+      ></CustomerDataTable>
+      <CustomerBorrowListDialog
+        v-if="customer_borrow_list_dialog"
+        :show-customer-borrow-list-dialog="customer_borrow_list_dialog"
+        :customer-id="customer_id"
+        @close-customer-borrow-list-dialog="customer_borrow_list_dialog = false"
+      ></CustomerBorrowListDialog>
+      <CustomerAddEditDialog
+        v-if="customer_create_update_dialog"
+        :customer-create-update-dialog="customer_create_update_dialog"
+        :selected-customer="selected_customer"
+        :mode="mode"
+        @close-create-customer-dialog="customer_create_update_dialog = false"
+      >
+      </CustomerAddEditDialog>
     </v-col>
 
     <SnackBar></SnackBar>
