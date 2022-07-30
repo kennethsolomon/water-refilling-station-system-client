@@ -306,6 +306,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     transactionDialogData: {
@@ -318,8 +319,8 @@ export default {
     menu: false,
     checkbox_free: false,
     checkbox_purchase: false,
-    items: [],
-    employees: [],
+    // items: [],
+    // employees: [],
     status: ['Active', 'Done'],
     type_of_service_list: ['Delivery', 'Pickup'],
     form: {
@@ -366,13 +367,15 @@ export default {
   }),
 
   async fetch() {
-    this.items = await this.$axios.$get(`http://localhost:8000/api/items`)
-    this.employees = await this.$axios.$get(
-      `http://localhost:8000/api/employees`
-    )
+    await this.$store.dispatch('callGetItems')
+    await this.$store.dispatch('callGetEmployees')
   },
 
   computed: {
+    ...mapGetters({
+      items: 'getItems',
+      employees: 'getEmployees',
+    }),
     buildTotalOrderByItem() {
       const total_order_list = {}
       return this.form.orders.reduce((list, row) => {

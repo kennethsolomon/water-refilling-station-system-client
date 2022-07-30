@@ -15,14 +15,14 @@
         :customer-id="customer_id"
         @close-customer-borrow-list-dialog="customer_borrow_list_dialog = false"
       ></CustomerBorrowListDialog>
-      <CustomerAddEditDialog
+      <LazyCustomerAddEditDialog
         v-if="customer_create_update_dialog"
         :customer-create-update-dialog="customer_create_update_dialog"
         :selected-customer="selected_customer"
         :mode="mode"
         @close-create-customer-dialog="customer_create_update_dialog = false"
       >
-      </CustomerAddEditDialog>
+      </LazyCustomerAddEditDialog>
     </v-col>
 
     <SnackBar></SnackBar>
