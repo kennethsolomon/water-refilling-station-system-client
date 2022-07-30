@@ -159,6 +159,7 @@ export default {
         .then((response) => {
           console.log(response)
           this.closeDialog()
+          this.$store.dispatch('callGetCustomers')
           this.$emit('closeTransactionDialog')
         })
     },

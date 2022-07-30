@@ -1,4 +1,4 @@
-// import actions from './actions';
+import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
@@ -12,7 +12,7 @@ const state = (inBrowser && window.__INITIAL_STATE__) ? window.__INITIAL_STATE__
 
 export default {
   state,
-//   actions,
+  actions,
   mutations,
   getters
 }

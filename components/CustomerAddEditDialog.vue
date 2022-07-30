@@ -159,7 +159,7 @@ export default {
       this.$axios
         .$post('update_or_create_customer', this.form)
         .then((response) => {
-          this.$emit('fetch-new-customer-data')
+          this.$store.dispatch('callGetCustomers')
           this.$emit('close-create-customer-dialog')
         })
     },

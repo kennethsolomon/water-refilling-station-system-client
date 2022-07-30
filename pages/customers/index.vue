@@ -2,13 +2,8 @@
   <v-row>
     <v-col cols="12">
       <v-card class="ma-3">
-        <div v-if="$fetchState.pending">Loading ...</div>
-        <div v-else-if="$fetchState.error">
-          Error: {{ $fetchState.error.message }}
-        </div>
-        <v-card-text v-else>
+        <v-card-text>
           <CustomerDataTable
-            :customers="customers"
             @customer-create-dialog="customer_create_update_dialog = true"
             @customer-update-dialog="customer_create_update_dialog = true"
             @set-mode="setMode($event)"
@@ -33,7 +28,6 @@
           :selected-customer="selected_customer"
           :mode="mode"
           @close-create-customer-dialog="customer_create_update_dialog = false"
-          @fetch-new-customer-data="fetchNewCustomerData"
         >
         </CustomerAddEditDialog>
       </v-card>
@@ -42,7 +36,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   name: 'CustomersPage',
   data: () => ({
@@ -52,18 +45,6 @@ export default {
     customer_id: null,
     selected_customer: {},
   }),
-  async fetch() {
-    const customers = await this.$axios.$get(
-      'http://localhost:8000/api/customers'
-    )
-    this.$store.commit('SET_CUSTOMERS', customers)
-  },
-
-  computed: {
-    ...mapGetters({
-      customers: 'getCustomers',
-    }),
-  },
 
   methods: {
     setCustomerId(customer_id) {
@@ -71,9 +52,6 @@ export default {
     },
     setMode(mode) {
       this.mode = mode
-    },
-    fetchNewCustomerData() {
-      this.$fetch()
     },
     customerEdit(selected_customer) {
       this.selected_customer = selected_customer

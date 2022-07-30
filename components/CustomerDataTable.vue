@@ -1,6 +1,11 @@
 <template>
   <div>
+    <div v-if="$fetchState.pending">Loading ...</div>
+    <div v-else-if="$fetchState.error">
+      Error: {{ $fetchState.error.message }}
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="buildCustomers"
       :search="search"
@@ -59,9 +64,9 @@
           </v-col>
         </v-row>
       </template>
-      <template #no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-      </template>
+      <!-- <template #no-data>
+        <v-btn color="primary"> Reset </v-btn>
+      </template> -->
     </v-data-table>
     <DeleteConfirmationDialog
       v-if="delete_dialog_data.delete_confirmation_dialog"
@@ -77,13 +82,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  props: {
-    customers: {
-      type: Object,
-      default: () => {},
-    },
-  },
   data: () => ({
     search: null,
     headers: [
@@ -103,7 +103,6 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
-    customers_list: [],
     // DELETE DIALOG
     delete_dialog_data: {
       delete_item_id: null,
@@ -117,9 +116,17 @@ export default {
       customer: null,
     },
   }),
+
+  async fetch() {
+    await this.$store.dispatch('callGetCustomers')
+  },
+
   computed: {
+    ...mapGetters({
+      customers: 'getCustomers',
+    }),
     buildCustomers() {
-      return this.customers_list.reduce((list, row) => {
+      return this.customers.data.reduce((list, row) => {
         let total_credit = 0
 
         // Compute Total Credits
@@ -133,9 +140,7 @@ export default {
       }, [])
     },
   },
-  created() {
-    this.customers_list = this.customers.data
-  },
+
   methods: {
     showBarrowListDialog(customer_id) {
       this.$emit('show-customer-borrow-list-dialog')
@@ -167,10 +172,7 @@ export default {
             `http://localhost:8000/api/delete_customer/${this.delete_dialog_data.delete_item_id}`
           )
           .then(() => {
-            this.customers_list.splice(
-              this.delete_dialog_data.delete_item_index,
-              1
-            )
+            this.$store.dispatch('callGetCustomers')
             this.resetDeleteDialog()
           })
       } else {
