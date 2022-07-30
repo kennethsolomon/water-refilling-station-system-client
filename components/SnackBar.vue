@@ -10,6 +10,11 @@
       multi-line
     >
       {{ snackbar.text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="unSetSnackbar"
+          ><v-icon>mdi-close</v-icon></v-btn
+        >
+      </template>
     </v-snackbar>
   </div>
 </template>
@@ -39,9 +44,6 @@ export default {
       this.$store.commit('SET_SNACKBAR', {
         snackbar: {
           status: false,
-          text: 'Something went wrong.',
-          timeout: 2000,
-          color: 'error',
         },
       })
     },
