@@ -366,11 +366,6 @@ export default {
     ],
   }),
 
-  async fetch() {
-    await this.$store.dispatch('callGetItems')
-    await this.$store.dispatch('callGetEmployees')
-  },
-
   computed: {
     ...mapGetters({
       items: 'getItems',

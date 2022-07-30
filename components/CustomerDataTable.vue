@@ -1,12 +1,13 @@
 <template>
   <div>
-    <!-- <div v-if="$fetchState.pending">
+    <div v-if="$fetchState.pending">
       <Loading></Loading>
     </div>
     <div v-else-if="$fetchState.error">
       Error: {{ $fetchState.error.message }}
-    </div> -->
+    </div>
     <v-data-table
+      v-else
       :headers="headers"
       :items="buildCustomers"
       :search="search"
@@ -84,7 +85,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Loading from './Loading.vue'
 export default {
+  components: { Loading },
   data: () => ({
     search: null,
     headers: [
@@ -120,6 +123,8 @@ export default {
 
   async fetch() {
     await this.$store.dispatch('callGetCustomers')
+    await this.$store.dispatch('callGetItems')
+    await this.$store.dispatch('callGetEmployees')
   },
 
   computed: {
