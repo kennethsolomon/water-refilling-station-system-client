@@ -32,6 +32,8 @@
         </CustomerAddEditDialog>
       </v-card>
     </v-col>
+
+    <SnackBar></SnackBar>
   </v-row>
 </template>
 

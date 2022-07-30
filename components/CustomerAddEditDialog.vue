@@ -74,7 +74,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="6">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required|digits:11"

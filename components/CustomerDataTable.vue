@@ -78,7 +78,6 @@
       :transaction-dialog-data="transaction_dialog_data"
       @closeTransactionDialog="closeTransactionDialog($event)"
     ></TransactionDialog>
-    <SnackBar></SnackBar>
   </div>
 </template>
 
