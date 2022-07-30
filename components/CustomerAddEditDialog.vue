@@ -160,8 +160,22 @@ export default {
         .$post('update_or_create_customer', this.form)
         .then((response) => {
           this.$store.dispatch('callGetCustomers')
+          this.createUpdateCustomerSnackbar()
           this.$emit('close-create-customer-dialog')
         })
+        .finally(() => {
+          setTimeout(this.$unSetSnackbar, 3000, this.$store)
+        })
+    },
+    createUpdateCustomerSnackbar() {
+      this.$store.commit('SET_SNACKBAR', {
+        snackbar: {
+          status: true,
+          text: 'Show snackbar successfully!',
+          timeout: 2000,
+          color: 'success',
+        },
+      })
     },
   },
 }
