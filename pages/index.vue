@@ -8,7 +8,6 @@
 
 <script>
 export default {
-  middleware: 'load-customers-employees-and-items',
   name: 'IndexPage',
   // Use if Global middleware is on inside nuxt.config and you want to exclude this page
   // auth: false

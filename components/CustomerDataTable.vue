@@ -161,11 +161,25 @@ export default {
           )
           .then(() => {
             this.$store.dispatch('callGetCustomers')
+            this.deleteCustomerSnackbar()
             this.resetDeleteDialog()
+          })
+          .finally(() => {
+            setTimeout(this.$unSetSnackbar, 7000, this.$store)
           })
       } else {
         this.resetDeleteDialog()
       }
+    },
+    deleteCustomerSnackbar() {
+      this.$store.commit('SET_SNACKBAR', {
+        snackbar: {
+          status: true,
+          text: 'Record successfully deleted!',
+          timeout: 5000,
+          color: 'error',
+        },
+      })
     },
     resetDeleteDialog() {
       this.delete_dialog_data.delete_item_id = null

@@ -44,6 +44,7 @@ export default {
       this.$store.commit('SET_SNACKBAR', {
         snackbar: {
           status: false,
+          color: this.snackbar.color,
         },
       })
     },
