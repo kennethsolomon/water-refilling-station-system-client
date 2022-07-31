@@ -13,7 +13,7 @@ export default ({ app }, inject) => {
     store.commit('SET_SNACKBAR', {
           snackbar: {
             status: false,
-            text: 'Something went wrong.',
+            text: store.state.snackbar.text,
             timeout: 2000,
             color: 'error',
           },
