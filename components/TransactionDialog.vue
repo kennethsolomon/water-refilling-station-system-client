@@ -160,7 +160,7 @@
                     <v-spacer></v-spacer>
                     <v-btn
                       v-shortkey.once="['alt', 'a']"
-                      @shortkey.native="addToOrders()"
+                      @shortkey.native="!invalid ? addToOrders() : ''"
                       class="ma-3 pa-4"
                       large
                       color="primary"
@@ -184,7 +184,9 @@
                     <v-spacer></v-spacer>
                     <v-btn
                       v-shortkey.once="['ctrl', 'enter']"
-                      @shortkey.native="checkOut()"
+                      @shortkey.native="
+                        !form.orders.length <= 0 ? checkOut() : ''
+                      "
                       large
                       color="primary"
                       @click="checkOut()"
