@@ -1,13 +1,6 @@
 <template>
   <div>
-    <div v-if="$fetchState.pending">
-      <Loading></Loading>
-    </div>
-    <div v-else-if="$fetchState.error">
-      Error: {{ $fetchState.error.message }}
-    </div>
     <v-data-table
-      v-else
       :headers="headers"
       :items="buildCustomers"
       :search="search"
@@ -66,9 +59,6 @@
           </v-col>
         </v-row>
       </template>
-      <template #no-data>
-        <v-btn color="primary" @click="$fetch"> Refresh </v-btn>
-      </template>
     </v-data-table>
     <LazyDeleteConfirmationDialog
       v-if="delete_dialog_data.delete_confirmation_dialog"
@@ -85,9 +75,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Loading from './Loading.vue'
 export default {
-  components: { Loading },
   data: () => ({
     search: null,
     headers: [
@@ -121,18 +109,12 @@ export default {
     },
   }),
 
-  async fetch() {
-    await this.$store.dispatch('callGetCustomers')
-    await this.$store.dispatch('callGetItems')
-    await this.$store.dispatch('callGetEmployees')
-  },
-
   computed: {
     ...mapGetters({
       customers: 'getCustomers',
     }),
     buildCustomers() {
-      return this.customers.data.reduce((list, row) => {
+      return this.customers?.data?.reduce((list, row) => {
         let total_credit = 0
 
         // Compute Total Credits

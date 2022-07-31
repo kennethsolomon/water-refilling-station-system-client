@@ -49,7 +49,7 @@ export default {
 
   // Global Middleware
   router: {
-    middleware: ['auth'],
+    middleware: ['auth', 'load-customers-employees-and-items'],
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
