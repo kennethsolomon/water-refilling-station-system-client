@@ -28,6 +28,9 @@
                       name="Employee"
                     >
                       <v-autocomplete
+                        v-shortkey.once="['alt', '1']"
+                        @shortkey.native="focus()"
+                        ref="employee"
                         v-model="form.employee_id"
                         label="Select Employee"
                         :items="employees.data"
@@ -156,6 +159,8 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
+                      v-shortkey.once="['alt', 'a']"
+                      @shortkey.native="addToOrders()"
                       class="ma-3 pa-4"
                       large
                       color="primary"
@@ -178,6 +183,8 @@
                     <p class="text-h6 text--primary">Order List:</p>
                     <v-spacer></v-spacer>
                     <v-btn
+                      v-shortkey.once="['ctrl', 'enter']"
+                      @shortkey.native="checkOut()"
                       large
                       color="primary"
                       @click="checkOut()"
@@ -319,8 +326,6 @@ export default {
     menu: false,
     checkbox_free: false,
     checkbox_purchase: false,
-    // items: [],
-    // employees: [],
     status: ['Active', 'Done'],
     type_of_service_list: ['Delivery', 'Pickup'],
     form: {
@@ -402,6 +407,9 @@ export default {
   },
 
   methods: {
+    focus() {
+      this.$refs.employee.focus()
+    },
     deleteOrder(item, index) {
       // const index = this.form.orders.indexOf(item)
       this.form.total_order_by_item[item.item_name] -=
