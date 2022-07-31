@@ -65,6 +65,7 @@
 
 <script>
 export default {
+  middleware: 'load-customers-employees-and-items',
   name: 'DefaultLayout',
   data() {
     return {

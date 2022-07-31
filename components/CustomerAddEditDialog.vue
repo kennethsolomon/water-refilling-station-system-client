@@ -1,11 +1,11 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="60vw" persistent>
+    <v-dialog v-model="dialog" width="45vw" persistent>
       <v-card>
-        <v-card-title class="text-h5 primary"
-          >{{ mode }} Customer
+        <v-card-title style="color: white" class="text-h5 primary">
+          {{ mode }} Customer
           <v-spacer></v-spacer>
-          <v-icon @click="$emit('close-create-customer-dialog')"
+          <v-icon color="white" @click="$emit('close-create-customer-dialog')"
             >mdi-close</v-icon
           ></v-card-title
         >
@@ -74,7 +74,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="6">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required|digits:11"
@@ -94,11 +94,14 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn
+                    large
                     class="mr-4"
                     type="submit"
+                    color="primary"
                     :dark="valid"
                     :disabled="invalid"
                   >
+                    <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>
                     submit
                   </v-btn>
                 </v-card-actions>
@@ -153,15 +156,49 @@ export default {
   methods: {
     fillForm() {
       this.form = Object.assign({}, this.selected_customer.attributes)
-      this.form.id = this.selected_customer.id
     },
     createUpdateCustomer() {
+      if (this.mode === 'Edit') {
+        if (this.hasChanges()) {
+          this.form.id = this.selected_customer.id
+        } else {
+          this.$store.commit('SET_SNACKBAR', {
+            snackbar: {
+              status: true,
+              text: 'No changes found.',
+              timeout: 5000,
+              color: 'error',
+            },
+          })
+          return
+        }
+      }
       this.$axios
         .$post('update_or_create_customer', this.form)
         .then((response) => {
           this.$store.dispatch('callGetCustomers')
+          this.createUpdateCustomerSnackbar()
           this.$emit('close-create-customer-dialog')
         })
+        .finally(() => {
+          setTimeout(this.$unSetSnackbar, 7000, this.$store)
+        })
+    },
+    createUpdateCustomerSnackbar() {
+      this.$store.commit('SET_SNACKBAR', {
+        snackbar: {
+          status: true,
+          text: 'Record successfully saved!',
+          timeout: 5000,
+          color: 'primary',
+        },
+      })
+    },
+    hasChanges() {
+      return (
+        JSON.stringify(this.selectedCustomer.attributes) !==
+        JSON.stringify(this.form)
+      )
     },
   },
 }

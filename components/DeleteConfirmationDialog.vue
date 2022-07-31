@@ -2,7 +2,7 @@
   <div class="text-center">
     <v-dialog v-model="dialog" width="500" persistent>
       <v-card>
-        <v-card-title class="text-h5 error"
+        <v-card-title style="color: white" class="text-h5 error"
           >Delete {{ deleteDialogData.delete_title }}</v-card-title
         >
 

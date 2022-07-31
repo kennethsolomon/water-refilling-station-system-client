@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div v-if="$fetchState.pending">Loading ...</div>
-    <div v-else-if="$fetchState.error">
-      Error: {{ $fetchState.error.message }}
-    </div>
     <v-data-table
-      v-else
       :headers="headers"
       :items="buildCustomers"
       :search="search"
@@ -64,20 +59,17 @@
           </v-col>
         </v-row>
       </template>
-      <!-- <template #no-data>
-        <v-btn color="primary"> Reset </v-btn>
-      </template> -->
     </v-data-table>
-    <DeleteConfirmationDialog
+    <LazyDeleteConfirmationDialog
       v-if="delete_dialog_data.delete_confirmation_dialog"
       :delete-dialog-data="delete_dialog_data"
       @confirmDelete="confirmDelete($event)"
-    ></DeleteConfirmationDialog>
-    <TransactionDialog
+    ></LazyDeleteConfirmationDialog>
+    <LazyTransactionDialog
       v-if="transaction_dialog_data.transaction_dialog"
       :transaction-dialog-data="transaction_dialog_data"
       @closeTransactionDialog="closeTransactionDialog($event)"
-    ></TransactionDialog>
+    ></LazyTransactionDialog>
   </div>
 </template>
 
@@ -117,16 +109,12 @@ export default {
     },
   }),
 
-  async fetch() {
-    await this.$store.dispatch('callGetCustomers')
-  },
-
   computed: {
     ...mapGetters({
       customers: 'getCustomers',
     }),
     buildCustomers() {
-      return this.customers.data.reduce((list, row) => {
+      return this.customers?.data?.reduce((list, row) => {
         let total_credit = 0
 
         // Compute Total Credits
@@ -173,11 +161,25 @@ export default {
           )
           .then(() => {
             this.$store.dispatch('callGetCustomers')
+            this.deleteCustomerSnackbar()
             this.resetDeleteDialog()
+          })
+          .finally(() => {
+            setTimeout(this.$unSetSnackbar, 7000, this.$store)
           })
       } else {
         this.resetDeleteDialog()
       }
+    },
+    deleteCustomerSnackbar() {
+      this.$store.commit('SET_SNACKBAR', {
+        snackbar: {
+          status: true,
+          text: 'Record successfully deleted!',
+          timeout: 5000,
+          color: 'error',
+        },
+      })
     },
     resetDeleteDialog() {
       this.delete_dialog_data.delete_item_id = null
