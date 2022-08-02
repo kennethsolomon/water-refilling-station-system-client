@@ -25,6 +25,7 @@ export default {
     '~/plugins/axios',
     '~/plugins/vee-validate.js',
     '~/plugins/helper.js',
+    { src: '~/plugins/vue-shortkey.js', mode: 'client' }
   ],
 
   loading: { color: 'white' },

@@ -160,6 +160,16 @@ export default {
           this.$store.dispatch('callGetCustomers')
           this.$emit('closeTransactionDialog')
         })
+        .catch((error) => {
+          this.$store.commit('SET_SNACKBAR', {
+            snackbar: {
+              status: true,
+              text: error.response.data.message,
+              timeout: 5000,
+              color: 'error',
+            },
+          })
+        })
         .finally(() => {
           setTimeout(this.$unSetSnackbar, 7000, this.$store)
         })
