@@ -413,7 +413,6 @@ export default {
       this.$refs.employee.focus()
     },
     deleteOrder(item, index) {
-      // const index = this.form.orders.indexOf(item)
       this.form.total_order_by_item[item.item_name] -=
         item.item_price * Number(item.quantity)
       this.form.orders.splice(index, 1)
@@ -458,7 +457,6 @@ export default {
       this.form.orders.push(this.order)
 
       this.clearOrder()
-      // Add Dialog Success after push
     },
     clearOrder() {
       this.order = {}
@@ -475,9 +473,6 @@ export default {
     closeTransactionDialog() {
       this.$emit('closeTransactionDialog')
     },
-    // confirmDelete(choice) {
-    //   this.$emit('confirmDelete', choice)
-    // },
   },
 }
 </script>

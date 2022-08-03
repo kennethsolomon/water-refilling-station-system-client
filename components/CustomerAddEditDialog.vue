@@ -155,13 +155,11 @@ export default {
 
   methods: {
     fillForm() {
-      this.form = Object.assign({}, this.selected_customer.attributes)
+      this.form = Object.assign({}, this.selected_customer)
     },
     createUpdateCustomer() {
       if (this.mode === 'Edit') {
-        if (this.hasChanges()) {
-          this.form.id = this.selected_customer.id
-        } else {
+        if (!this.hasChanges()) {
           this.$store.commit('SET_SNACKBAR', {
             snackbar: {
               status: true,
@@ -195,10 +193,7 @@ export default {
       })
     },
     hasChanges() {
-      return (
-        JSON.stringify(this.selectedCustomer.attributes) !==
-        JSON.stringify(this.form)
-      )
+      return JSON.stringify(this.selectedCustomer) !== JSON.stringify(this.form)
     },
   },
 }
