@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="45vw" persistent>
+    <v-dialog v-model="dialog" width="auto" persistent>
       <v-card>
         <v-card-title style="color: white" class="text-h5 primary">
           {{ mode }} Customer
@@ -14,7 +14,7 @@
             <ValidationObserver ref="observer" v-slot="{ valid, invalid }">
               <v-form ref="form" @submit.prevent="createUpdateCustomer">
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="12" md="4" sm="12">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required"
@@ -29,7 +29,7 @@
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
-                  <v-col cols="4">
+                  <v-col cols="12" md="4" sm="12">
                     <v-text-field
                       v-model="form.middlename"
                       label="Middle Name"
@@ -37,7 +37,7 @@
                       :success="valid"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="4">
+                  <v-col cols="12" md="4" sm="12">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required"
@@ -54,7 +54,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md="12" sm="12">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required"
@@ -74,7 +74,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="12" md="6" sm="12">
                     <ValidationProvider
                       v-slot="{ errors }"
                       rules="required|digits:11"
