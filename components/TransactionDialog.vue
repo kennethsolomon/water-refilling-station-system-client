@@ -10,7 +10,7 @@
       <v-card>
         <v-toolbar dark color="primary">
           <v-toolbar-title
-            >{{ transactionDialogData.customer.attributes.fullname }}
+            >{{ transactionDialogData.customer.fullname }}
             Transactions 💸
           </v-toolbar-title>
           <v-spacer></v-spacer>
@@ -35,7 +35,7 @@
                         label="Select Employee"
                         :items="employees.data"
                         item-value="id"
-                        item-text="attributes.fullname"
+                        item-text="fullname"
                         hide-details
                         solo
                         :error-messages="errors"
@@ -80,7 +80,7 @@
                             v-model="selected_item"
                             label="Select Item"
                             :items="items.data"
-                            item-text="attributes.name"
+                            item-text="name"
                             return-object
                             solo
                             :error-messages="errors"
@@ -434,19 +434,19 @@ export default {
     addToOrders() {
       // Item
       this.order.item_id = this.selected_item.id
-      this.order.item_name = this.selected_item.attributes.name
+      this.order.item_name = this.selected_item.name
       if (this.selected_is_purchase) {
-        this.order.item_price = this.selected_item.attributes.purchase_price
+        this.order.item_price = this.selected_item.purchase_price
       } else if (
         this.selected_type_of_service.toLowerCase() === 'delivery' &&
         !this.selected_is_purchase
       ) {
-        this.order.item_price = this.selected_item.attributes.delivery_price
+        this.order.item_price = this.selected_item.delivery_price
       } else if (
         this.selected_type_of_service.toLowerCase() === 'pickup' &&
         !this.selected_is_purchase
       ) {
-        this.order.item_price = this.selected_item.attributes.pickup_price
+        this.order.item_price = this.selected_item.pickup_price
       }
 
       this.form.status = this.selected_status.toLowerCase()

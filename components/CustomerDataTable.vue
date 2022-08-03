@@ -4,7 +4,7 @@
       :headers="headers"
       :items="buildCustomers"
       :search="search"
-      sort-by="attributes.transactions[0].attributes.latest_transaction"
+      sort-by="transactions[0].latest_transaction"
       :sort-desc="true"
       data-table-scroll-bar-width="17px"
       class="elevation-1"
@@ -31,7 +31,7 @@
           <v-col cols="12">
             <v-icon
               medium
-              :disabled="!item.attributes.borrows.length"
+              :disabled="!item.borrows.length"
               @click="showBarrowListDialog(item.id)"
             >
               mdi-water-alert-outline
@@ -80,18 +80,18 @@ export default {
     search: null,
     headers: [
       { text: 'ID', value: 'id' },
-      { text: 'Customer Name', value: 'attributes.fullname' },
-      { text: 'Address', value: 'attributes.address' },
+      { text: 'Customer Name', value: 'fullname' },
+      { text: 'Address', value: 'address' },
       {
         text: 'Credit',
-        value: 'attributes.credit',
+        value: 'credit',
         align: 'center',
       },
       { text: 'Borrow', value: 'gallon', align: 'center' },
-      { text: 'Contact Number', value: 'attributes.contact_number' },
+      { text: 'Contact Number', value: 'contact_number' },
       {
         text: 'Last Transaction',
-        value: 'attributes.transactions[0].attributes.latest_transaction',
+        value: 'transactions.latest_transaction',
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],
@@ -118,10 +118,10 @@ export default {
         let total_credit = 0
 
         // Compute Total Credits
-        row.attributes.transactions.forEach((element) => {
-          total_credit += Number(element?.attributes?.credit)
+        row.transactions.forEach((element) => {
+          total_credit += Number(element?.credit)
         })
-        row.attributes.credit = total_credit
+        row.credit = total_credit
 
         list.push(row)
         return list
@@ -150,7 +150,7 @@ export default {
         this.buildCustomers.indexOf(item)
 
       this.delete_dialog_data.delete_item_id = item.id
-      this.delete_dialog_data.delete_title = item.attributes.fullname
+      this.delete_dialog_data.delete_title = item.fullname
       this.delete_dialog_data.delete_confirmation_dialog = true
     },
     async confirmDelete(confirm) {
