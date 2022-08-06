@@ -126,6 +126,7 @@
                       <v-col cols="2">
                         <v-checkbox
                           v-model="selected_is_borrow"
+                          :disabled="checkbox_borrow"
                           label="Borrow"
                           color="success"
                           hide-details
@@ -328,6 +329,7 @@ export default {
     menu: false,
     checkbox_free: false,
     checkbox_purchase: false,
+    checkbox_borrow: false,
     status: ['Active', 'Done'],
     type_of_service_list: ['Delivery', 'Pickup'],
     form: {
@@ -422,6 +424,7 @@ export default {
         this.checkbox_purchase = !this.checkbox_purchase
       } else if (checkbox === 'purchase') {
         this.checkbox_free = !this.checkbox_free
+        this.checkbox_borrow = !this.checkbox_borrow
       }
     },
     closePaymentDialog(event) {
