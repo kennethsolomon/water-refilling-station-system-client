@@ -61,7 +61,7 @@ export default {
 
   async fetch() {
     this.customer_borrowed_items = await this.$axios.$get(
-      `http://localhost:8000/api/customer_total_borrow_items/${this.customerId}`
+      `customer_total_borrow_items/${this.customerId}`
     )
   },
 

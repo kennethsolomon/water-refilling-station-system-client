@@ -3,13 +3,11 @@
     <template>
       <v-data-table
         :headers="headers"
-        :items="transactions"
+        :items="transactions.borrows"
         :items-per-page="5"
-        sort-by="id"
-        sort-desc
         class="elevation-1"
       >
-        <template v-slot:[`item.orders`]="{ item }">
+        <!-- <template v-slot:[`item.orders`]="{ item }">
           <v-menu
             :close-on-content-click="false"
             open-on-hover
@@ -55,11 +53,11 @@
               </v-simple-table>
             </v-card>
           </v-menu>
-        </template>
+        </template> -->
 
-        <template v-slot:[`item.status`]="{ item }">
+        <!-- <template v-slot:[`item.status`]="{ item }">
           {{ item.status.charAt(0).toUpperCase() + item.status.slice(1) }}
-        </template>
+        </template> -->
       </v-data-table>
     </template>
   </div>
@@ -77,9 +75,9 @@ export default {
     return {
       headers: [
         {
-          text: 'Transaction ID',
+          text: 'Item',
           align: 'start',
-          value: 'id',
+          value: 'item_info.name',
         },
         { text: 'Orders', value: 'orders' },
         { text: 'Credit', value: 'credit' },

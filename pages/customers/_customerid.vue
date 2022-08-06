@@ -17,6 +17,7 @@
       <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
         <v-tab>Customer Information</v-tab>
         <v-tab>Transaction History</v-tab>
+        <v-tab>Borrowed List</v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab">
@@ -71,6 +72,15 @@
               <TransactionHistory
                 :transactions="transactions.transactions"
               ></TransactionHistory>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card flat>
+            <v-card-text>
+              <BorrowedList
+                :transactions="transactions.transactions"
+              ></BorrowedList>
             </v-card-text>
           </v-card>
         </v-tab-item>
