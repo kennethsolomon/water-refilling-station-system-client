@@ -78,9 +78,7 @@
         <v-tab-item>
           <v-card flat>
             <v-card-text>
-              <BorrowedList
-                :transactions="transactions.transactions"
-              ></BorrowedList>
+              <BorrowedList :borrows="transactions.borrows"></BorrowedList>
             </v-card-text>
           </v-card>
         </v-tab-item>

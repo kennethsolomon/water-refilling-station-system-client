@@ -3,7 +3,7 @@
     <template>
       <v-data-table
         :headers="headers"
-        :items="transactions.borrows"
+        :items="borrows"
         :items-per-page="5"
         class="elevation-1"
       >
@@ -58,35 +58,56 @@
         <!-- <template v-slot:[`item.status`]="{ item }">
           {{ item.status.charAt(0).toUpperCase() + item.status.slice(1) }}
         </template> -->
+
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="returnDialog(item)">
+            mdi-pencil
+          </v-icon>
+        </template>
       </v-data-table>
     </template>
+    <ReturnDialog
+      v-if="return_dialog"
+      :form="form"
+      :return-dialog="return_dialog"
+      @closeReturnDialog="closeReturnDialog()"
+    ></ReturnDialog>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    transactions: {
+    borrows: {
       type: Array,
       default: () => [],
     },
   },
   data() {
     return {
+      return_dialog: false,
+      form: {},
       headers: [
         {
           text: 'Item',
           align: 'start',
           value: 'item_info.name',
         },
-        { text: 'Orders', value: 'orders' },
-        { text: 'Credit', value: 'credit' },
-        { text: 'Discount', value: 'discount' },
-        { text: 'Employee', value: 'employee_info.fullname' },
-        { text: 'Status', value: 'status' },
-        { text: 'Last Transaction', value: 'latest_transaction' },
+        { text: 'Description', value: 'item_info.description' },
+        { text: 'Quantity', value: 'quantity' },
+        { text: 'Price', value: 'item_info.price' },
+        { text: 'Actions', value: 'actions', sortable: false },
       ],
     }
+  },
+  methods: {
+    returnDialog(item) {
+      this.form = item
+      this.return_dialog = true
+    },
+    closeReturnDialog() {
+      this.return_dialog = false
+    },
   },
 }
 </script>
