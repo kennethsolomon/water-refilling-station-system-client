@@ -60,8 +60,13 @@
         </template> -->
 
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="returnDialog(item)">
-            mdi-pencil
+          <v-icon
+            medium
+            color="primary"
+            class="mr-2"
+            @click="returnDialog(item)"
+          >
+            mdi-keyboard-return
           </v-icon>
         </template>
       </v-data-table>
@@ -107,6 +112,8 @@ export default {
     },
     closeReturnDialog() {
       this.return_dialog = false
+
+      this.$emit('closeReturnDialog')
     },
   },
 }

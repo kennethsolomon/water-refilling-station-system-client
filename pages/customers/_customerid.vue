@@ -78,7 +78,10 @@
         <v-tab-item>
           <v-card flat>
             <v-card-text>
-              <BorrowedList :borrows="transactions.borrows"></BorrowedList>
+              <BorrowedList
+                :borrows="transactions.borrows"
+                @closeReturnDialog="closeReturnDialog()"
+              ></BorrowedList>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -111,6 +114,12 @@ export default {
 
         return total_credit
       }, [])
+    },
+  },
+
+  methods: {
+    async closeReturnDialog() {
+      await this.$nuxt.refresh()
     },
   },
 }
