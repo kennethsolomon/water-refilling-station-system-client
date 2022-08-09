@@ -87,6 +87,7 @@
         </v-tab-item>
       </v-tabs-items>
     </v-card>
+    <SnackBar></SnackBar>
   </div>
 </template>
 
