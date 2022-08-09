@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="auto" persistent>
+  <v-dialog v-model="dialog" width="535px" persistent>
     <v-card>
       <v-card-title style="color: white" class="text-h5 primary"
         >Return Borrowed Item - {{ form.item_info.name }}
@@ -70,17 +70,16 @@ export default {
       dialog: false,
       return_form: {
         id: null,
+        item_id: null,
         quantity: 0,
       },
     }
   },
   methods: {
     returnBorrowedItem() {
-      console.log('test')
       this.$axios
         .$post(`return_item/${this.return_form.id}`, this.return_form)
         .then((response) => {
-          // Snack Bar
           this.$store.commit('SET_SNACKBAR', {
             snackbar: {
               status: true,
@@ -92,6 +91,16 @@ export default {
 
           this.$emit('closeReturnDialog')
         })
+        .catch((error) => {
+          this.$store.commit('SET_SNACKBAR', {
+            snackbar: {
+              status: true,
+              text: error.response.data.message,
+              timeout: 5000,
+              color: 'error',
+            },
+          })
+        }) 
         .finally(() => {
           setTimeout(this.$unSetSnackbar, 7000, this.$store)
         })
@@ -108,14 +117,17 @@ export default {
     },
 
     'return_form.quantity'(new_val, old_val) {
-      if (new_val === '' || new_val < 0 || new_val === null) {
+      if (new_val === '' || new_val < 0 || new_val > this.form.quantity ||  new_val === null) {
         this.input_error = true
+      } else {
+        this.input_error = false
       }
     },
   },
   created() {
     this.dialog = this.returnDialog
-    this.return_form.id = this.form.id
+    this.return_form.id = Number(this.form.id)
+    this.return_form.item_id = Number(this.form.item_info.id)
     this.return_form.quantity = Number(this.form.quantity)
   },
 }
