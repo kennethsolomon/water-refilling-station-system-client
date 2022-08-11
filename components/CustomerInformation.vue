@@ -94,7 +94,7 @@ export default {
         total_credit += Number(row?.credit)
 
         return total_credit
-      }, [])
+      }, 0)
     },
   },
 
