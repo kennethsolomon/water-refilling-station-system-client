@@ -22,49 +22,9 @@
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
-          <v-card flat>
-            <v-card-text>
-              <v-row class="pa-5">
-                <v-col cols="2" class="pa-0">
-                  <h3>Address:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ transactions.address }}</h3>
-                </v-col>
-                <v-col cols="2" class="pa-0">
-                  <h3>Contact Number:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ transactions.contact_number }}</h3>
-                </v-col>
-                <v-col cols="2" class="pa-0">
-                  <h3>Total Credits:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ computeCredit }}</h3>
-                </v-col>
-                <v-col cols="2" class="pa-0">
-                  <h3>Total Borrowed Items:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ transactions.borrows.length }}</h3>
-                </v-col>
-                <v-col cols="2" class="pa-0">
-                  <h3>Total Transactions:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ transactions.transactions.length }}</h3>
-                </v-col>
-
-                <v-col cols="2" class="pa-0">
-                  <h3>Customer Since:</h3>
-                </v-col>
-                <v-col cols="10" class="pa-0">
-                  <h3>{{ transactions.register_customer }}</h3>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <CustomerInformation
+            :transactions="transactions"
+          ></CustomerInformation>
         </v-tab-item>
         <v-tab-item>
           <v-card flat>
@@ -105,17 +65,6 @@ export default {
     return {
       transactions: customer_transactions.data.data[0],
     }
-  },
-
-  computed: {
-    computeCredit() {
-      let total_credit = 0
-      return this.transactions?.transactions?.reduce((list, row) => {
-        total_credit += Number(row?.credit)
-
-        return total_credit
-      }, [])
-    },
   },
 
   methods: {
