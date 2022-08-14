@@ -117,7 +117,7 @@ export default {
     },
 
     'return_form.quantity'(new_val, old_val) {
-      if (new_val === '' || new_val < 0 || new_val > this.form.quantity ||  new_val === null) {
+      if (new_val === '' || new_val <= 0 || new_val > this.form.quantity ||  new_val === null) {
         this.input_error = true
       } else {
         this.input_error = false

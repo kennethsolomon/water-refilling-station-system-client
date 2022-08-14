@@ -95,7 +95,7 @@ export default {
           to: '/login',
         },
       ],
-      title: 'Ann & Kenneth Water Refilling Station',
+      title: 'Solomon Water Refilling Station',
     }
   },
 

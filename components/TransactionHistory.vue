@@ -86,6 +86,7 @@ export default {
         { text: 'Discount', value: 'discount' },
         { text: 'Employee', value: 'employee_info.fullname' },
         { text: 'Status', value: 'status' },
+        { text: 'Transaction Date', value: 'transaction_date' },
         { text: 'Last Transaction', value: 'latest_transaction' },
       ],
     }
