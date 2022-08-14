@@ -89,6 +89,7 @@ export default {
             },
           })
 
+          this.$store.dispatch('callGetCustomers')
           this.$emit('closeReturnDialog')
         })
         .catch((error) => {
