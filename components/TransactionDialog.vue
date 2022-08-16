@@ -409,6 +409,9 @@ export default {
   created() {
     this.dialog = this.transactionDialogData.transaction_dialog
     this.form.customer_id = this.transactionDialogData.customer.id
+    // TODO: Create CRUD Transaction if MODE == EDIT
+    // if(this.transactionDialogData.mode === 'edit') {
+    // }
   },
 
   methods: {

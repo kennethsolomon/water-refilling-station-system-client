@@ -48,6 +48,11 @@
       </v-tabs-items>
     </v-card>
     <SnackBar></SnackBar>
+    <LazyTransactionDialog
+      v-if="transaction_dialog_data.transaction_dialog"
+      :transaction-dialog-data="transaction_dialog_data"
+      @closeTransactionDialog="closeTransactionDialog($event)"
+    ></LazyTransactionDialog>
   </div>
 </template>
 
@@ -56,6 +61,11 @@ export default {
   name: 'CustomerInfoPage',
   data: () => ({
     tab: null,
+    // TRANSACTION DIALOG
+    transaction_dialog_data: {
+      transaction_dialog: false,
+      customer: null,
+    },
   }),
   async asyncData({ params, $axios }) {
     const [customer_transactions] = await Promise.all([
