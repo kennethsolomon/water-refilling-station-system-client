@@ -7,45 +7,36 @@
         <strong>{{ transactions.register_customer }}</strong>
       </div>
       <div class="d-flex">
-        <v-card max-width="200" color="primary" class="rounded-xl mr-2">
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div class="text-overline mb-2 white--text">
-                <v-icon color="white"
-                  >mdi-file-document-multiple-outline</v-icon
-                >
-                Transactions
-              </div>
-              <v-list-item-title class="text-h5 mb-1 white--text">
-                {{ transactions.transactions.length }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card>
-        <v-card max-width="200" color="success" class="rounded-xl mr-2">
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div class="text-overline mb-2 white--text">
-                <v-icon color="white">mdi-cash-lock</v-icon> Credits
-              </div>
-              <v-list-item-title class="text-h5 mb-1 white--text">
-                ₱ {{ computeCredit }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card>
-        <v-card max-width="200" color="warning" class="rounded-xl mr-2">
-          <v-list-item three-line>
-            <v-list-item-content>
-              <div class="text-overline mb-2 white--text">
-                <v-icon color="white">mdi-water-minus-outline</v-icon> Borrows
-              </div>
-              <v-list-item-title class="text-h5 mb-1 white--text">
-                {{ transactions.borrows.length }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card>
+        <!-- Transactions -->
+        <Card
+          :properties="{
+            icon: 'mdi-file-document-multiple-outline',
+            color: 'primary',
+            title: 'Transactions',
+            symbol: '',
+            data: transactions.transactions.length,
+          }"
+        ></Card>
+        <!-- Credits -->
+        <Card
+          :properties="{
+            icon: 'mdi-cash-lock',
+            color: 'success',
+            title: 'Credits',
+            symbol: '₱ ',
+            data: computeCredit,
+          }"
+        ></Card>
+        <!-- Borrows -->
+        <Card
+          :properties="{
+            icon: 'mdi-water-minus-outline',
+            color: 'warning',
+            title: 'Borrows',
+            symbol: '',
+            data: transactions.borrows.length,
+          }"
+        ></Card>
       </div>
 
       <v-row class="mt-5">
