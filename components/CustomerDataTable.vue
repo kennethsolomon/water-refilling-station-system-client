@@ -91,7 +91,7 @@ export default {
       { text: 'Contact Number', value: 'contact_number' },
       {
         text: 'Last Transaction',
-        value: 'transactions.latest_transaction',
+        value: 'transactions[0].latest_transaction',
       },
       { text: 'Actions', value: 'actions', sortable: false, align: 'center' },
     ],

@@ -126,6 +126,8 @@
                       <v-col cols="2">
                         <v-checkbox
                           v-model="selected_is_borrow"
+                          @click="disableCheckbox('borrow')"
+                          :disabled="checkbox_borrow"
                           label="Borrow"
                           color="success"
                           hide-details
@@ -328,6 +330,7 @@ export default {
     menu: false,
     checkbox_free: false,
     checkbox_purchase: false,
+    checkbox_borrow: false,
     status: ['Active', 'Done'],
     type_of_service_list: ['Delivery', 'Pickup'],
     form: {
@@ -406,6 +409,9 @@ export default {
   created() {
     this.dialog = this.transactionDialogData.transaction_dialog
     this.form.customer_id = this.transactionDialogData.customer.id
+    // TODO: Create CRUD Transaction if MODE == EDIT
+    // if(this.transactionDialogData.mode === 'edit') {
+    // }
   },
 
   methods: {
@@ -422,6 +428,9 @@ export default {
         this.checkbox_purchase = !this.checkbox_purchase
       } else if (checkbox === 'purchase') {
         this.checkbox_free = !this.checkbox_free
+        this.checkbox_borrow = !this.checkbox_borrow
+      } else if (checkbox === 'borrow') {
+        this.checkbox_purchase = !this.checkbox_purchase
       }
     },
     closePaymentDialog(event) {

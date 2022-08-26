@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - template-nuxt',
-    title: 'template-nuxt',
+    titleTemplate: '%s - Solomon Water Refilling Station',
+    title: 'Solomon Water Refilling Station',
     htmlAttrs: {
       lang: 'en',
     },
