@@ -71,7 +71,7 @@ export default {
     return {
       clipped: true,
       drawer: true,
-      loggedIn: ['Welcome', 'Dashboard', 'Logout', 'Customers'],
+      loggedIn: ['Welcome', 'Dashboard', 'Logout', 'Customers', 'Delivery'],
       // loggedOut: [], // Add All Item if Logged Out
       items: [
         {
@@ -80,9 +80,14 @@ export default {
           to: '/',
         },
         {
-          icon: 'mdi-apps',
+          icon: 'mdi-account',
           title: 'Customers',
           to: '/customers',
+        },
+        {
+          icon: 'mdi-car-lifted-pickup',
+          title: 'Delivery',
+          to: '/deliveries',
         },
         {
           icon: 'mdi-chart-bubble',
